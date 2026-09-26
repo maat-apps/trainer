@@ -16,7 +16,7 @@ What follows here is what's specific to **trainer**.
 ## Project Snapshot
 
 - Vite + React + TypeScript, Tailwind v4, shadcn (`base-nova`).
-- Supports desktop and mobile viewports.
+- Mobile-only (`src/components/mobile-gate.tsx`), like routines.
 
 ## Commands
 
