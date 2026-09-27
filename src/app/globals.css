@@ -9,6 +9,7 @@
    later. See @maat-apps/ui's own README. */
 @source "../../node_modules/@maat-apps/ui/dist/app-bar.js";
 @source "../../node_modules/@maat-apps/ui/dist/button.js";
+@source "../../node_modules/@maat-apps/ui/dist/drag-handle.js";
 @source "../../node_modules/@maat-apps/ui/dist/drawer.js";
 @source "../../node_modules/@maat-apps/ui/dist/empty-state.js";
 @source "../../node_modules/@maat-apps/ui/dist/fab-button.js";

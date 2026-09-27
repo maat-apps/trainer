@@ -46,6 +46,12 @@ test("importing a backup replaces the current data", async ({ page }) => {
   // Close the settings drawer via the phone back gesture (Drawer pushes
   // its own history entry) and check the list underneath.
   await page.goBack();
-  await expect(page.getByRole("link", { name: "Marek" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ewa" })).not.toBeVisible();
+  // The client row's own button (not its drag handle, "Przenieś Marek",
+  // which also matches on a plain name search).
+  await expect(
+    page.locator('button[data-main="true"]', { hasText: "Marek" }),
+  ).toBeVisible();
+  await expect(
+    page.locator('button[data-main="true"]', { hasText: "Ewa" }),
+  ).not.toBeVisible();
 });
