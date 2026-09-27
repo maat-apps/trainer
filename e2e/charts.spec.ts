@@ -6,7 +6,7 @@ test("weight chart renders after logging a weight and shows a share button", asy
   page,
 }) => {
   await goHome(page);
-  await page.getByRole("link", { name: "+ Dodaj klienta" }).click();
+  await page.getByRole("button", { name: "Dodaj klienta" }).click();
   await page.getByLabel("Imię").fill("Tomek");
   await page.getByRole("button", { name: "Zapisz" }).click();
 
@@ -22,7 +22,7 @@ test("weight chart renders after logging a weight and shows a share button", asy
 
 test("progress chart renders for a logged exercise", async ({ page }) => {
   await goHome(page);
-  await page.getByRole("link", { name: "+ Dodaj klienta" }).click();
+  await page.getByRole("button", { name: "Dodaj klienta" }).click();
   await page.getByLabel("Imię").fill("Kasia");
   await page.getByRole("button", { name: "Zapisz" }).click();
 

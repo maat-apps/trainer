@@ -8,7 +8,7 @@ test("logging a session with a set shows it on the client profile", async ({
   await goHome(page);
 
   // Create a client.
-  await page.getByRole("link", { name: "+ Dodaj klienta" }).click();
+  await page.getByRole("button", { name: "Dodaj klienta" }).click();
   await page.getByLabel("Imię").fill("Anna");
   await page.getByRole("button", { name: "Zapisz" }).click();
 

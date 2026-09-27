@@ -14,7 +14,7 @@ test("client list renders with an empty state and nav links", async ({
 
 test("adding a client navigates to their profile", async ({ page }) => {
   await goHome(page);
-  await page.getByRole("link", { name: "+ Dodaj klienta" }).click();
+  await page.getByRole("button", { name: "Dodaj klienta" }).click();
   await page.getByLabel("Imię").fill("Jan");
   await page.getByRole("button", { name: "Zapisz" }).click();
   await expect(page.getByRole("heading", { name: "Jan" })).toBeVisible();

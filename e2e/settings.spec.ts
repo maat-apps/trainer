@@ -4,7 +4,7 @@ import { goHome } from "./utils";
 
 test("importing a backup replaces the current data", async ({ page }) => {
   await goHome(page);
-  await page.getByRole("link", { name: "+ Dodaj klienta" }).click();
+  await page.getByRole("button", { name: "Dodaj klienta" }).click();
   await page.getByLabel("Imię").fill("Ewa");
   await page.getByRole("button", { name: "Zapisz" }).click();
 
