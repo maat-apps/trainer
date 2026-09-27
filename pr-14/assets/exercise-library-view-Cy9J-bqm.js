@@ -1,0 +1,1 @@
+import{j as e}from"./index-iP037huP.js";function i(){return e.jsxs("main",{className:"mx-auto max-w-md p-4",children:[e.jsx("h1",{className:"mb-2 text-xl",children:"Ćwiczenia"}),e.jsx("p",{className:"text-muted-foreground text-sm",children:"Biblioteka ćwiczeń pojawi się tutaj (patrz #11)."})]})}export{i as ExerciseLibraryView};
