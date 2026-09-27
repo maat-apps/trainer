@@ -9,7 +9,7 @@ test("adding an exercise with a new category shows it in the library", async ({
   await page.getByRole("link", { name: "Ćwiczenia" }).click();
   await expect(page.getByText("Brak ćwiczeń.")).toBeVisible();
 
-  await page.getByRole("link", { name: "+ Dodaj ćwiczenie" }).click();
+  await page.getByRole("button", { name: "Dodaj ćwiczenie" }).click();
   await page.getByLabel("Nazwa").fill("Przysiad");
   await page.getByRole("combobox", { name: "Kategoria" }).click();
   await page.getByRole("option", { name: "+ Nowa kategoria" }).click();
