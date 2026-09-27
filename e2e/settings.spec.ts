@@ -8,7 +8,8 @@ test("importing a backup replaces the current data", async ({ page }) => {
   await page.getByLabel("Imię").fill("Ewa");
   await page.getByRole("button", { name: "Zapisz" }).click();
 
-  await page.getByRole("link", { name: "Ustawienia" }).click();
+  await goHome(page);
+  await page.getByRole("button", { name: "Ustawienia" }).click();
 
   const backup = {
     app: "trainer",
@@ -33,7 +34,7 @@ test("importing a backup replaces the current data", async ({ page }) => {
     },
   };
 
-  await page.getByRole("button", { name: "Importuj dane" }).click();
+  await page.getByRole("button", { name: "Importuj" }).click();
   await page.locator('input[type="file"]').setInputFiles({
     name: "backup.txt",
     mimeType: "text/plain",
@@ -42,7 +43,9 @@ test("importing a backup replaces the current data", async ({ page }) => {
 
   await expect(page.getByText("Dane zaimportowane pomyślnie.")).toBeVisible();
 
-  await page.getByRole("link", { name: "Klienci" }).click();
+  // Close the settings drawer via the phone back gesture (Drawer pushes
+  // its own history entry) and check the list underneath.
+  await page.goBack();
   await expect(page.getByRole("link", { name: "Marek" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Ewa" })).not.toBeVisible();
 });

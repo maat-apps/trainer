@@ -11,7 +11,7 @@ test("client list renders with an empty state and nav links", async ({
     page.getByRole("heading", { name: "Brak klientów" }),
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "Ćwiczenia" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ustawienia" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ustawienia" })).toBeVisible();
 });
 
 test("adding a client navigates to their profile", async ({ page }) => {

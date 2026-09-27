@@ -38,11 +38,6 @@ const ExerciseFormView = lazy(() =>
     default: m.ExerciseFormView,
   })),
 );
-const SettingsView = lazy(() =>
-  import("@/views/settings/settings-view").then((m) => ({
-    default: m.SettingsView,
-  })),
-);
 const SessionFormView = lazy(() =>
   import("@/views/sessions/session-form-view").then((m) => ({
     default: m.SessionFormView,
@@ -93,7 +88,6 @@ export function AppRouter() {
             path="/exercises/:exerciseId/edit"
             element={<ExerciseFormView />}
           />
-          <Route path="/settings" element={<SettingsView />} />
         </Route>
       </Routes>
     </BrowserRouter>
