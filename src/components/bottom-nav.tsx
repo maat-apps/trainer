@@ -1,10 +1,9 @@
-import { Barbell, Gear, Users } from "@phosphor-icons/react";
+import { Barbell, Users } from "@phosphor-icons/react";
 import { NavLink, Outlet } from "react-router";
 
 const navItems = [
   { to: "/", end: true, label: "Klienci", Icon: Users },
   { to: "/exercises", end: false, label: "Ćwiczenia", Icon: Barbell },
-  { to: "/settings", end: false, label: "Ustawienia", Icon: Gear },
 ] as const;
 
 const linkClassName = ({ isActive }: { isActive: boolean }) =>
@@ -13,11 +12,12 @@ const linkClassName = ({ isActive }: { isActive: boolean }) =>
   }`;
 
 /**
- * App-wide bottom navigation (Klienci / Ćwiczenia / Ustawienia), fixed to
- * the viewport bottom — every route renders through this shell via the
- * nested <Outlet/>. `pb-16` on the content wrapper below reserves the
- * same height as the fixed bar (h-16) so it never covers the last bit of
- * scrolled content.
+ * App-wide bottom navigation (Klienci / Ćwiczenia), fixed to the viewport
+ * bottom — every route renders through this shell via the nested
+ * <Outlet/>. Settings isn't a nav destination — it's a drawer opened from
+ * the client list's header, matching routines. `pb-16` on the content
+ * wrapper below reserves the same height as the fixed bar (h-16) so it
+ * never covers the last bit of scrolled content.
  */
 export function AppLayout() {
   return (

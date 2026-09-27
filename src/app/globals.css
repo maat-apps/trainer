@@ -1,16 +1,22 @@
 @import "tailwindcss";
 @import "shadcn/tailwind.css";
 
-/* @maat-apps/ui's Button/Input/Select (and MobileGate) live in
-   node_modules, which Tailwind doesn't scan by default — without this,
-   their classes would be silently purged. Scoped to just the compiled
-   files actually imported, not the whole package, so unused components
-   (Drawer, AppBar, ...) don't bloat the bundle — widen this if more
-   @maat-apps/ui components get imported later. See @maat-apps/ui's own
-   README. */
+/* @maat-apps/ui's compiled component files live in node_modules, which
+   Tailwind doesn't scan by default — without this, their classes would
+   be silently purged. Scoped to just the compiled files actually
+   imported, not the whole package, so an unused component doesn't bloat
+   the bundle — widen this if more @maat-apps/ui components get imported
+   later. See @maat-apps/ui's own README. */
+@source "../../node_modules/@maat-apps/ui/dist/app-bar.js";
 @source "../../node_modules/@maat-apps/ui/dist/button.js";
+@source "../../node_modules/@maat-apps/ui/dist/drawer.js";
+@source "../../node_modules/@maat-apps/ui/dist/empty-state.js";
+@source "../../node_modules/@maat-apps/ui/dist/fab-button.js";
 @source "../../node_modules/@maat-apps/ui/dist/input.js";
+@source "../../node_modules/@maat-apps/ui/dist/mobile-gate.js";
+@source "../../node_modules/@maat-apps/ui/dist/page-header.js";
 @source "../../node_modules/@maat-apps/ui/dist/select.js";
+@source "../../node_modules/@maat-apps/ui/dist/settings-primitives.js";
 
 /* MobileGate's phone-sized:block/phone-sized:hidden classes are the one
    thing not worth a whole-file @source scan for (see the trainer#6
