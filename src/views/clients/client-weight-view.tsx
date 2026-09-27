@@ -1,7 +1,8 @@
+import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
 import { useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   CartesianGrid,
   Line,
@@ -32,9 +33,11 @@ function formatLabel(x: unknown): string {
 
 export function ClientWeightView() {
   const { clientId } = useParams();
+  const navigate = useNavigate();
   const { clients } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const chartRef = useRef<HTMLDivElement>(null);
+  const backTo = clientId ? `/clients/${clientId}` : "/";
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -42,9 +45,14 @@ export function ClientWeightView() {
 
   if (!client) {
     return (
-      <main className="mx-auto max-w-md p-4">
+      <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+        <AppBar
+          title="Waga"
+          backLabel="Wstecz"
+          onBack={() => navigate(backTo)}
+        />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
-      </main>
+      </div>
     );
   }
 
@@ -72,8 +80,8 @@ export function ClientWeightView() {
   };
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <h1 className="mb-4 text-xl">Waga</h1>
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <AppBar title="Waga" backLabel="Wstecz" onBack={() => navigate(backTo)} />
 
       {rawPoints.length === 0 ? (
         <p className="text-muted-foreground text-sm">
@@ -148,6 +156,6 @@ export function ClientWeightView() {
           )}
         </>
       )}
-    </main>
+    </div>
   );
 }

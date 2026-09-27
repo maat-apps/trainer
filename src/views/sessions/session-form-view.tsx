@@ -1,3 +1,4 @@
+import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
 import {
@@ -32,6 +33,7 @@ export function SessionFormView() {
   const { clients, exercises } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const existing = client?.sessions.find((item) => item.id === sessionId);
+  const backTo = clientId ? `/clients/${clientId}` : "/";
 
   const [date, setDate] = useState(existing?.date ?? "");
   const [notes, setNotes] = useState(existing?.notes ?? "");
@@ -49,9 +51,14 @@ export function SessionFormView() {
 
   if (!client) {
     return (
-      <main className="mx-auto max-w-md p-4">
+      <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+        <AppBar
+          title={existing ? "Edytuj sesję" : "Nowa sesja"}
+          backLabel="Wstecz"
+          onBack={() => navigate(backTo)}
+        />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
-      </main>
+      </div>
     );
   }
 
@@ -134,10 +141,12 @@ export function SessionFormView() {
   };
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <h1 className="mb-4 text-xl">
-        {existing ? "Edytuj sesję" : "Nowa sesja"}
-      </h1>
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <AppBar
+        title={existing ? "Edytuj sesję" : "Nowa sesja"}
+        backLabel="Wstecz"
+        onBack={() => navigate(backTo)}
+      />
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1">
           Data (opcjonalnie)
@@ -342,6 +351,6 @@ export function SessionFormView() {
 
         <Button type="submit">Zapisz sesję</Button>
       </form>
-    </main>
+    </div>
   );
 }

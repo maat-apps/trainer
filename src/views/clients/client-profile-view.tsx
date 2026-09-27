@@ -1,5 +1,7 @@
+import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
+import { PencilSimple } from "@phosphor-icons/react";
 import { type FormEvent, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
@@ -15,9 +17,14 @@ export function ClientProfileView() {
 
   if (!client) {
     return (
-      <main className="mx-auto max-w-md p-4">
+      <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+        <AppBar
+          title="Klient"
+          backLabel="Wstecz"
+          onBack={() => navigate("/")}
+        />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
-      </main>
+      </div>
     );
   }
 
@@ -46,25 +53,31 @@ export function ClientProfileView() {
   };
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <div className="mb-4 flex items-start justify-between">
-        <div>
-          <h1 className="text-xl">
-            {client.firstName}
-            {client.lastName ? ` ${client.lastName}` : ""}
-          </h1>
-          {client.goal && (
-            <p className="text-muted-foreground">{client.goal}</p>
-          )}
-        </div>
-        <div className="flex gap-3 text-sm">
-          <Link to={`/clients/${client.id}/edit`} className="underline">
-            Edytuj
-          </Link>
-          <Button variant="link" onClick={handleDelete}>
-            Usuń
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <AppBar
+        title={`${client.firstName}${client.lastName ? ` ${client.lastName}` : ""}`}
+        backLabel="Wstecz"
+        onBack={() => navigate("/")}
+        action={
+          <Button
+            variant="ghost"
+            size="icon-lg"
+            aria-label="Edytuj klienta"
+            onClick={() => navigate(`/clients/${client.id}/edit`)}
+          >
+            <PencilSimple className="size-6" />
           </Button>
-        </div>
+        }
+      />
+      <div className="mb-4 flex items-start justify-between">
+        {client.goal ? (
+          <p className="text-muted-foreground">{client.goal}</p>
+        ) : (
+          <span />
+        )}
+        <Button variant="link" className="text-sm" onClick={handleDelete}>
+          Usuń klienta
+        </Button>
       </div>
 
       <section className="mb-4">
@@ -163,6 +176,6 @@ export function ClientProfileView() {
           </ul>
         )}
       </section>
-    </main>
+    </div>
   );
 }
