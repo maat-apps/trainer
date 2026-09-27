@@ -20,6 +20,7 @@
     "test:unit:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test --project=mobile-chromium --project=mobile-iphone",
+    "import-historical-data": "node scripts/import-historical-data.ts",
     "validate": "npm run lint && npm run format:check && npm run typecheck && npm run test:coverage && npm run test:e2e && npm run build && npm audit",
     "validate:fix": "npm run lint:fix && npm run format && npm audit fix"
   },
