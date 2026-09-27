@@ -112,7 +112,11 @@ export function ClientProfileView() {
           Zobacz wykres wagi
         </Link>
         <form className="flex gap-2" onSubmit={handleLogWeight}>
+          <label className="sr-only" htmlFor="weight-input">
+            Waga (kg)
+          </label>
           <input
+            id="weight-input"
             type="number"
             step="0.1"
             inputMode="decimal"
