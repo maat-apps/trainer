@@ -25,6 +25,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
@@ -47,6 +49,13 @@
 
 :root {
   color-scheme: dark;
+  /* Self-hosted via @fontsource-variable (see src/main.tsx) — the same
+     ecosystem-wide typeface routines uses, never fetched from Google
+     Fonts at runtime. One family for both tokens — headings use
+     --font-heading for semantic clarity even though it currently
+     resolves the same as --font-sans. */
+  --font-sans: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.985 0 0);
@@ -74,6 +83,9 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
