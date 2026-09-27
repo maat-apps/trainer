@@ -8,7 +8,7 @@ import js from "@eslint/js";
 import prettier from "eslint-plugin-prettier/recommended";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -34,4 +34,5 @@ export const baseConfig = defineConfig([
       globals: globals.node,
     },
   },
+  globalIgnores(["dist/**", "build/**"]),
 ]);
