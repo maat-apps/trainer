@@ -1,6 +1,16 @@
+import { Button } from "@maat-apps/ui/button";
+import { Input } from "@maat-apps/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@maat-apps/ui/select";
 import { type FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
+import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/hooks/use-store";
 import { saveClient, saveExercise } from "@/lib/storage";
 import type { Set as ExerciseSet, Session, SessionExercise } from "@/types";
@@ -131,17 +141,15 @@ export function SessionFormView() {
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1">
           Data (opcjonalnie)
-          <input
+          <Input
             type="date"
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
             value={date ?? ""}
             onChange={(event) => setDate(event.target.value)}
           />
         </label>
         <label className="flex flex-col gap-1">
           Notatki
-          <textarea
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+          <Textarea
             value={notes ?? ""}
             onChange={(event) => setNotes(event.target.value)}
           />
@@ -165,13 +173,14 @@ export function SessionFormView() {
                   <h2 className="font-medium">
                     {exercise?.name ?? "Usunięte ćwiczenie"}
                   </h2>
-                  <button
+                  <Button
                     type="button"
-                    className="text-sm underline"
+                    variant="link"
+                    className="h-auto p-0 text-sm"
                     onClick={() => removeExerciseFromSession(se.exerciseId)}
                   >
                     Usuń
-                  </button>
+                  </Button>
                 </div>
 
                 {se.sets.length > 0 && (
@@ -193,10 +202,10 @@ export function SessionFormView() {
                 <div className="flex flex-wrap items-end gap-2">
                   <label className="flex flex-col text-xs">
                     Waga (kg)
-                    <input
+                    <Input
                       type="number"
                       step="0.5"
-                      className="border-muted-foreground/40 w-20 rounded border bg-transparent p-1"
+                      className="w-20"
                       value={input.weight}
                       onChange={(event) =>
                         setSetInputs((current) => ({
@@ -211,9 +220,9 @@ export function SessionFormView() {
                   </label>
                   <label className="flex flex-col text-xs">
                     Powtórzenia
-                    <input
+                    <Input
                       type="number"
-                      className="border-muted-foreground/40 w-20 rounded border bg-transparent p-1"
+                      className="w-20"
                       value={input.reps}
                       onChange={(event) =>
                         setSetInputs((current) => ({
@@ -228,9 +237,9 @@ export function SessionFormView() {
                   </label>
                   <label className="flex flex-col text-xs">
                     Czas (s)
-                    <input
+                    <Input
                       type="number"
-                      className="border-muted-foreground/40 w-20 rounded border bg-transparent p-1"
+                      className="w-20"
                       value={input.duration}
                       onChange={(event) =>
                         setSetInputs((current) => ({
@@ -244,34 +253,39 @@ export function SessionFormView() {
                     />
                   </label>
                   {exercise?.isUnilateral && (
-                    <label className="flex flex-col text-xs">
-                      Strona
-                      <select
-                        className="border-muted-foreground/40 rounded border bg-transparent p-1"
+                    <div className="flex flex-col text-xs">
+                      <span>Strona</span>
+                      <Select
                         value={input.side}
-                        onChange={(event) =>
+                        onValueChange={(value) =>
                           setSetInputs((current) => ({
                             ...current,
                             [se.exerciseId]: {
                               ...input,
-                              side: event.target.value,
+                              side: value ?? "",
                             },
                           }))
                         }
                       >
-                        <option value="">—</option>
-                        <option value="left">Lewa</option>
-                        <option value="right">Prawa</option>
-                      </select>
-                    </label>
+                        <SelectTrigger aria-label="Strona" className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">—</SelectItem>
+                          <SelectItem value="left">Lewa</SelectItem>
+                          <SelectItem value="right">Prawa</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   )}
-                  <button
+                  <Button
                     type="button"
-                    className="border-muted-foreground/40 rounded border p-1 text-sm"
+                    variant="outline"
+                    size="sm"
                     onClick={() => addSet(se.exerciseId)}
                   >
                     + Dodaj serię
-                  </button>
+                  </Button>
                 </div>
               </div>
             );
@@ -282,50 +296,51 @@ export function SessionFormView() {
           <h2 className="mb-2 font-medium">Dodaj ćwiczenie</h2>
           {availableExercises.length > 0 && (
             <div className="mb-2 flex gap-2">
-              <select
-                className="border-muted-foreground/40 flex-1 rounded border bg-transparent p-2"
+              <Select
                 value={pickerExerciseId}
-                onChange={(event) => setPickerExerciseId(event.target.value)}
+                onValueChange={(value) => setPickerExerciseId(value ?? "")}
               >
-                <option value="">Wybierz ćwiczenie</option>
-                {availableExercises.map((exercise) => (
-                  <option key={exercise.id} value={exercise.id}>
-                    {exercise.name}
-                  </option>
-                ))}
-              </select>
-              <button
+                <SelectTrigger
+                  aria-label="Wybierz ćwiczenie"
+                  className="flex-1"
+                >
+                  <SelectValue placeholder="Wybierz ćwiczenie" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableExercises.map((exercise) => (
+                    <SelectItem key={exercise.id} value={exercise.id}>
+                      {exercise.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
                 type="button"
-                className="border-muted-foreground/40 rounded border p-2"
+                variant="outline"
                 onClick={() => addExerciseToSession(pickerExerciseId)}
               >
                 Dodaj
-              </button>
+              </Button>
             </div>
           )}
           <div className="flex gap-2">
-            <input
-              className="border-muted-foreground/40 flex-1 rounded border bg-transparent p-2"
+            <Input
+              className="flex-1"
               placeholder="Nowe ćwiczenie"
               value={newExerciseName}
               onChange={(event) => setNewExerciseName(event.target.value)}
             />
-            <button
+            <Button
               type="button"
-              className="border-muted-foreground/40 rounded border p-2"
+              variant="outline"
               onClick={handleCreateAndAddExercise}
             >
               Utwórz i dodaj
-            </button>
+            </Button>
           </div>
         </section>
 
-        <button
-          type="submit"
-          className="border-muted-foreground/40 rounded border p-2"
-        >
-          Zapisz sesję
-        </button>
+        <Button type="submit">Zapisz sesję</Button>
       </form>
     </main>
   );

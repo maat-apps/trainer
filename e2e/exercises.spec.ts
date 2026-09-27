@@ -11,9 +11,8 @@ test("adding an exercise with a new category shows it in the library", async ({
 
   await page.getByRole("link", { name: "+ Dodaj ćwiczenie" }).click();
   await page.getByLabel("Nazwa").fill("Przysiad");
-  await page
-    .getByLabel("Kategoria")
-    .selectOption({ label: "+ Nowa kategoria" });
+  await page.getByRole("combobox", { name: "Kategoria" }).click();
+  await page.getByRole("option", { name: "+ Nowa kategoria" }).click();
   await page.getByLabel("Nazwa nowej kategorii").fill("Nogi");
   await page.getByLabel("Ćwiczenie jednostronne").check();
   await page.getByRole("button", { name: "Zapisz" }).click();

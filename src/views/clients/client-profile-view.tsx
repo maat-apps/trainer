@@ -1,3 +1,5 @@
+import { Button } from "@maat-apps/ui/button";
+import { Input } from "@maat-apps/ui/input";
 import { type FormEvent, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
@@ -59,9 +61,9 @@ export function ClientProfileView() {
           <Link to={`/clients/${client.id}/edit`} className="underline">
             Edytuj
           </Link>
-          <button onClick={handleDelete} className="underline">
+          <Button variant="link" onClick={handleDelete}>
             Usuń
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -115,22 +117,17 @@ export function ClientProfileView() {
           <label className="sr-only" htmlFor="weight-input">
             Waga (kg)
           </label>
-          <input
+          <Input
             id="weight-input"
             type="number"
             step="0.1"
             inputMode="decimal"
             placeholder="kg"
-            className="border-muted-foreground/40 w-24 rounded border bg-transparent p-2"
+            className="w-24"
             value={weightInput}
             onChange={(event) => setWeightInput(event.target.value)}
           />
-          <button
-            type="submit"
-            className="border-muted-foreground/40 rounded border p-2"
-          >
-            Zapisz wagę
-          </button>
+          <Button type="submit">Zapisz wagę</Button>
         </form>
       </section>
 

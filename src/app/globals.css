@@ -1,28 +1,83 @@
 @import "tailwindcss";
+@import "shadcn/tailwind.css";
 
-/* @maat-apps/ui's MobileGate (used in src/app/root.tsx) renders
-   phone-sized:block/phone-sized:hidden, but it lives in node_modules,
-   which Tailwind doesn't scan by default — without this, those classes
-   would be silently purged. `@source inline(...)` force-generates exactly
-   these classes without scanning the package's files at all (pointing
-   @source at the package's compiled dist/ instead pulled in every other
-   component's classes too, even unused ones, and inflated the CSS bundle
-   ~4x). Add more names here if another @maat-apps/ui component gets used
-   later. See @maat-apps/ui's own README. */
+/* @maat-apps/ui's Button/Input/Select (and MobileGate) live in
+   node_modules, which Tailwind doesn't scan by default — without this,
+   their classes would be silently purged. Scoped to just the compiled
+   files actually imported, not the whole package, so unused components
+   (Drawer, AppBar, ...) don't bloat the bundle — widen this if more
+   @maat-apps/ui components get imported later. See @maat-apps/ui's own
+   README. */
+@source "../../node_modules/@maat-apps/ui/dist/button.js";
+@source "../../node_modules/@maat-apps/ui/dist/input.js";
+@source "../../node_modules/@maat-apps/ui/dist/select.js";
+
+/* MobileGate's phone-sized:block/phone-sized:hidden classes are the one
+   thing not worth a whole-file @source scan for (see the trainer#6
+   history behind this pattern) — force-generate just these two. */
 @source inline("phone-sized:{block,hidden}");
 
-/* Matches the viewport routines/MobileGate treats as "phone-sized". Drop
-   this (and the @source line above) if the app ever supports desktop and
-   drops MobileGate. */
+/* Matches the viewport MobileGate treats as "phone-sized". Drop this (and
+   the @source line above) if the app ever supports desktop and drops
+   MobileGate. */
 @custom-variant phone-sized (@media (max-width: 481px), @media (max-height: 481px) and (orientation: landscape));
 
-:root {
-  --background: #000000;
-  --foreground: #ffffff;
-  --muted-foreground: #a1a1aa;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+:root {
+  color-scheme: dark;
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.985 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.708 0 0);
+  --radius: 10px;
+  /* True black, not a dark gray — an off pixel draws ~0 power on OLED
+     screens, most phones this app targets. */
+  --background: oklch(0 0 0);
+  --foreground: oklch(0.985 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+button,
+input {
+  -webkit-tap-highlight-color: transparent;
 }

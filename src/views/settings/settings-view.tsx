@@ -1,3 +1,4 @@
+import { Button } from "@maat-apps/ui/button";
 import { type ChangeEvent, useRef, useState } from "react";
 
 import { applyBackup, downloadBackup, parseBackup } from "@/lib/backup";
@@ -33,20 +34,20 @@ export function SettingsView() {
           je regularnie, aby móc je odzyskać po zmianie urządzenia lub
           wyczyszczeniu danych przeglądarki.
         </p>
-        <button
+        <Button
           type="button"
-          className="border-muted-foreground/40 rounded border p-2"
+          variant="outline"
           onClick={() => downloadBackup()}
         >
           Eksportuj dane
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="border-muted-foreground/40 rounded border p-2"
+          variant="outline"
           onClick={() => fileInputRef.current?.click()}
         >
           Importuj dane
-        </button>
+        </Button>
         <input
           ref={fileInputRef}
           type="file"

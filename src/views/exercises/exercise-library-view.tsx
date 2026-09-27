@@ -1,3 +1,10 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@maat-apps/ui/select";
 import { useState } from "react";
 import { Link } from "react-router";
 
@@ -33,22 +40,26 @@ export function ExerciseLibraryView() {
       </div>
 
       {categories.length > 0 && (
-        <label className="mb-4 flex flex-col gap-1 text-sm">
-          Filtruj wg kategorii
-          <select
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+        <div className="mb-4 flex flex-col gap-1 text-sm">
+          <span>Filtruj wg kategorii</span>
+          <Select
             value={categoryFilter}
-            onChange={(event) => setCategoryFilter(event.target.value)}
+            onValueChange={(value) => setCategoryFilter(value ?? "all")}
           >
-            <option value="all">Wszystkie</option>
-            <option value="none">Bez kategorii</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </label>
+            <SelectTrigger aria-label="Filtruj wg kategorii">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Wszystkie</SelectItem>
+              <SelectItem value="none">Bez kategorii</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       )}
 
       {visibleExercises.length === 0 ? (

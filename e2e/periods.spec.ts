@@ -10,7 +10,8 @@ test("adding a period shows it on the client profile", async ({ page }) => {
   await page.getByRole("button", { name: "Zapisz" }).click();
 
   await page.getByRole("link", { name: "+ Nowy okres" }).click();
-  await page.getByLabel("Typ").selectOption({ label: "Redukcja" });
+  await page.getByRole("combobox", { name: "Typ" }).click();
+  await page.getByRole("option", { name: "Redukcja" }).click();
   await page.getByLabel("Etykieta (opcjonalnie)").fill("Lato 2026");
   await page.getByRole("button", { name: "Zapisz" }).click();
 

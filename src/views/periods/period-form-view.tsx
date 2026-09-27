@@ -1,3 +1,12 @@
+import { Button } from "@maat-apps/ui/button";
+import { Input } from "@maat-apps/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@maat-apps/ui/select";
 import { type FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -56,58 +65,50 @@ export function PeriodFormView() {
         {existing ? "Edytuj okres" : "Nowy okres"}
       </h1>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-        <label className="flex flex-col gap-1">
-          Typ
-          <select
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+        <div className="flex flex-col gap-1">
+          <span>Typ</span>
+          <Select
             value={type}
-            onChange={(event) => setType(event.target.value as Period["type"])}
+            onValueChange={(value) => setType(value as Period["type"])}
           >
-            <option value="mass">Masa</option>
-            <option value="cut">Redukcja</option>
-          </select>
-        </label>
+            <SelectTrigger aria-label="Typ">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="mass">Masa</SelectItem>
+              <SelectItem value="cut">Redukcja</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <label className="flex flex-col gap-1">
           Etykieta (opcjonalnie)
-          <input
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+          <Input
             value={label}
             onChange={(event) => setLabel(event.target.value)}
           />
         </label>
         <label className="flex flex-col gap-1">
           Data rozpoczęcia
-          <input
+          <Input
             type="date"
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
             value={startDate ?? ""}
             onChange={(event) => setStartDate(event.target.value)}
           />
         </label>
         <label className="flex flex-col gap-1">
           Data zakończenia
-          <input
+          <Input
             type="date"
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
             value={endDate ?? ""}
             onChange={(event) => setEndDate(event.target.value)}
           />
         </label>
         <div className="mt-2 flex gap-2">
-          <button
-            type="submit"
-            className="border-muted-foreground/40 rounded border p-2"
-          >
-            Zapisz
-          </button>
+          <Button type="submit">Zapisz</Button>
           {existing && (
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="border-muted-foreground/40 rounded border p-2"
-            >
+            <Button type="button" variant="outline" onClick={handleDelete}>
               Usuń
-            </button>
+            </Button>
           )}
         </div>
       </form>
