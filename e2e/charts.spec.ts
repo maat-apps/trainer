@@ -27,8 +27,12 @@ test("progress chart renders for a logged exercise", async ({ page }) => {
   await page.getByRole("button", { name: "Zapisz" }).click();
 
   await page.getByRole("link", { name: "+ Nowa sesja" }).click();
+  await page.getByRole("button", { name: "Dalej" }).click();
+
   await page.getByPlaceholder("Nowe ćwiczenie").fill("Martwy ciąg");
   await page.getByRole("button", { name: "Utwórz i dodaj" }).click();
+  await page.getByRole("button", { name: "Dalej" }).click();
+
   await page.getByLabel("Waga (kg)").fill("60");
   await page.getByRole("button", { name: "+ Dodaj serię" }).click();
   await page.getByRole("button", { name: "Zapisz sesję" }).click();
