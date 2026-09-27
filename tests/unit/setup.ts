@@ -1,4 +1,3 @@
-// Global Vitest setup — add polyfills/mocks here as this app's src/lib/,
-// src/hooks/, or src/i18n/ code needs browser globals jsdom doesn't
-// provide (see maat-core/STRUCTURE.md's Testing section).
-export {};
+// jsdom has no IndexedDB implementation, so every test file relying on the
+// storage layer needs it faked globally rather than per-file.
+import "fake-indexeddb/auto";
