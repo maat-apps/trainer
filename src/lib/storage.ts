@@ -119,11 +119,22 @@ export function saveCategory(category: Category): void {
   writeData({ ...data, categories });
 }
 
+/**
+ * Deletes a category and clears it from any exercise that referenced it —
+ * `categoryId` is already nullable for exactly this reason (see trainer#2),
+ * so this avoids leaving a dangling reference rather than blocking the
+ * delete or cascading it to the exercises themselves.
+ */
 export function deleteCategory(categoryId: string): void {
   const data = readData();
   writeData({
     ...data,
     categories: data.categories.filter((item) => item.id !== categoryId),
+    exercises: data.exercises.map((exercise) =>
+      exercise.categoryId === categoryId
+        ? { ...exercise, categoryId: null }
+        : exercise,
+    ),
   });
 }
 

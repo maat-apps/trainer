@@ -33,6 +33,11 @@ const ExerciseLibraryView = lazy(() =>
     default: m.ExerciseLibraryView,
   })),
 );
+const ExerciseFormView = lazy(() =>
+  import("@/views/exercises/exercise-form-view").then((m) => ({
+    default: m.ExerciseFormView,
+  })),
+);
 const SettingsView = lazy(() =>
   import("@/views/settings/settings-view").then((m) => ({
     default: m.SettingsView,
@@ -57,6 +62,11 @@ export function AppRouter() {
             element={<ClientWeightView />}
           />
           <Route path="/exercises" element={<ExerciseLibraryView />} />
+          <Route path="/exercises/new" element={<ExerciseFormView />} />
+          <Route
+            path="/exercises/:exerciseId/edit"
+            element={<ExerciseFormView />}
+          />
           <Route path="/settings" element={<SettingsView />} />
         </Route>
       </Routes>
