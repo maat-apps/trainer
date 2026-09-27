@@ -1,0 +1,1 @@
+import{u as s,j as e}from"./index-B_VO28tE.js";function r(){const{t}=s();return e.jsx("main",{className:"grid min-h-dvh place-items-center p-8 text-center",children:e.jsx("h1",{className:"text-xl",children:t("welcome")})})}export{r as HomeView};
