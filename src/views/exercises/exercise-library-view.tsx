@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
+import { EmptyState } from "@maat-apps/ui/empty-state";
 import { FabButton } from "@maat-apps/ui/fab-button";
 import { PageHeader } from "@maat-apps/ui/page-header";
 
@@ -64,7 +65,22 @@ export function ExerciseLibraryView() {
       )}
 
       {visibleExercises.length === 0 ? (
-        <p className="text-muted-foreground">Brak ćwiczeń.</p>
+        exercises.length === 0 ? (
+          <EmptyState
+            title="Brak ćwiczeń"
+            description="Dodaj pierwsze ćwiczenie, żeby zacząć budować bibliotekę."
+            action={{
+              label: (
+                <>
+                  <Plus /> Dodaj ćwiczenie
+                </>
+              ),
+              onClick: () => navigate("/exercises/new"),
+            }}
+          />
+        ) : (
+          <p className="text-muted-foreground">Brak ćwiczeń w tej kategorii.</p>
+        )
       ) : (
         <ul className="flex flex-col gap-2">
           {visibleExercises.map((exercise) => (

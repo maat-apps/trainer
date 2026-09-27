@@ -5,7 +5,7 @@ import { goHome } from "./utils";
 test("adding a period shows it on the client profile", async ({ page }) => {
   await goHome(page);
 
-  await page.getByRole("button", { name: "Dodaj klienta" }).click();
+  await page.getByRole("button", { name: "Dodaj klienta" }).first().click();
   await page.getByLabel("Imię").fill("Ola");
   await page.getByRole("button", { name: "Zapisz" }).click();
 

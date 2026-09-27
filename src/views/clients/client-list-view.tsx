@@ -2,6 +2,7 @@ import { Plus } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
+import { EmptyState } from "@maat-apps/ui/empty-state";
 import { FabButton } from "@maat-apps/ui/fab-button";
 import { PageHeader } from "@maat-apps/ui/page-header";
 
@@ -15,7 +16,18 @@ export function ClientListView() {
         <h1 className="font-heading text-xl font-semibold">Klienci</h1>
       </PageHeader>
       {clients.length === 0 ? (
-        <p className="text-muted-foreground">Brak klientów.</p>
+        <EmptyState
+          title="Brak klientów"
+          description="Dodaj pierwszego klienta, żeby zacząć śledzić jego postępy."
+          action={{
+            label: (
+              <>
+                <Plus /> Dodaj klienta
+              </>
+            ),
+            onClick: () => navigate("/clients/new"),
+          }}
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {clients.map((client) => (
