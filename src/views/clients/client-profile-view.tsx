@@ -66,13 +66,33 @@ export function ClientProfileView() {
       </div>
 
       <section className="mb-4">
-        <h2 className="mb-1 font-medium">Sesje treningowe</h2>
+        <div className="mb-1 flex items-center justify-between">
+          <h2 className="font-medium">Sesje treningowe</h2>
+          <Link
+            to={`/clients/${client.id}/sessions/new`}
+            className="text-sm underline"
+          >
+            + Nowa sesja
+          </Link>
+        </div>
         {client.sessions.length === 0 ? (
           <p className="text-muted-foreground text-sm">
             Brak zarejestrowanych sesji.
           </p>
         ) : (
-          <p className="text-sm">{client.sessions.length} sesji</p>
+          <ul className="flex flex-col gap-1 text-sm">
+            {client.sessions.map((session) => (
+              <li key={session.id}>
+                <Link
+                  to={`/clients/${client.id}/sessions/${session.id}`}
+                  className="underline"
+                >
+                  {session.date ?? "brak daty"} ({session.exercises.length}{" "}
+                  ćwiczeń)
+                </Link>
+              </li>
+            ))}
+          </ul>
         )}
       </section>
 
