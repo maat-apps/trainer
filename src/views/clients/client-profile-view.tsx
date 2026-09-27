@@ -131,13 +131,35 @@ export function ClientProfileView() {
       </section>
 
       <section>
-        <h2 className="mb-1 font-medium">Okresy</h2>
+        <div className="mb-1 flex items-center justify-between">
+          <h2 className="font-medium">Okresy</h2>
+          <Link
+            to={`/clients/${client.id}/periods/new`}
+            className="text-sm underline"
+          >
+            + Nowy okres
+          </Link>
+        </div>
         {client.periods.length === 0 ? (
           <p className="text-muted-foreground text-sm">
             Brak zdefiniowanych okresów.
           </p>
         ) : (
-          <p className="text-sm">{client.periods.length} okresów</p>
+          <ul className="flex flex-col gap-1 text-sm">
+            {client.periods.map((period) => (
+              <li key={period.id}>
+                <Link
+                  to={`/clients/${client.id}/periods/${period.id}`}
+                  className="underline"
+                >
+                  {period.type === "mass" ? "Masa" : "Redukcja"}
+                  {period.label && ` — ${period.label}`}
+                  {period.startDate &&
+                    ` (${period.startDate}${period.endDate ? ` – ${period.endDate}` : ""})`}
+                </Link>
+              </li>
+            ))}
+          </ul>
         )}
       </section>
     </main>

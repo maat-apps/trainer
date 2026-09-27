@@ -48,6 +48,11 @@ const SessionFormView = lazy(() =>
     default: m.SessionFormView,
   })),
 );
+const PeriodFormView = lazy(() =>
+  import("@/views/periods/period-form-view").then((m) => ({
+    default: m.PeriodFormView,
+  })),
+);
 
 export function AppRouter() {
   return (
@@ -73,6 +78,14 @@ export function AppRouter() {
           <Route
             path="/clients/:clientId/sessions/:sessionId"
             element={<SessionFormView />}
+          />
+          <Route
+            path="/clients/:clientId/periods/new"
+            element={<PeriodFormView />}
+          />
+          <Route
+            path="/clients/:clientId/periods/:periodId"
+            element={<PeriodFormView />}
           />
           <Route path="/exercises" element={<ExerciseLibraryView />} />
           <Route path="/exercises/new" element={<ExerciseFormView />} />
