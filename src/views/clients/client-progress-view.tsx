@@ -1,6 +1,17 @@
 import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
-import { Input } from "@maat-apps/ui/input";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@maat-apps/ui/chart";
+import {
+  DateRangePickerInput,
+  type DateRangeValue,
+} from "@maat-apps/ui/date-picker";
 import {
   Select,
   SelectContent,
@@ -10,16 +21,7 @@ import {
 } from "@maat-apps/ui/select";
 import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import { useAppData } from "@/hooks/use-store";
 import { shareOrDownloadChart } from "@/lib/chart-export";
@@ -51,8 +53,7 @@ export function ClientProgressView() {
     loggedIds.includes(exercise.id),
   );
   const [exerciseId, setExerciseId] = useState(availableExercises[0]?.id ?? "");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [dateRange, setDateRange] = useState<DateRangeValue | undefined>();
   const [shareStatus, setShareStatus] = useState<string | null>(null);
 
   if (!client) {
@@ -78,9 +79,16 @@ export function ClientProgressView() {
     : [];
   const points = filterByDateRange(
     rawPoints,
-    startDate || null,
-    endDate || null,
+    dateRange?.from?.toISOString() ?? null,
+    dateRange?.to?.toISOString() ?? null,
   );
+
+  const chartConfig: ChartConfig = selectedExercise?.isUnilateral
+    ? {
+        left: { label: "Lewa", color: "#60a5fa" },
+        right: { label: "Prawa", color: "#f87171" },
+      }
+    : { value: { label: selectedExercise?.name ?? "", color: "#ffffff" } };
 
   const handleShare = async () => {
     if (!chartRef.current) return;
@@ -130,28 +138,18 @@ export function ClientProgressView() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex gap-2">
-              <label className="flex flex-1 flex-col gap-1 text-sm">
-                Od
-                <Input
-                  type="date"
-                  value={startDate}
-                  onChange={(event) => setStartDate(event.target.value)}
-                />
-              </label>
-              <label className="flex flex-1 flex-col gap-1 text-sm">
-                Do
-                <Input
-                  type="date"
-                  value={endDate}
-                  onChange={(event) => setEndDate(event.target.value)}
-                />
-              </label>
-            </div>
+            <DateRangePickerInput
+              label="Zakres dat"
+              startLabel="Od"
+              endLabel="Do"
+              numberOfMonths={1}
+              value={dateRange}
+              onValueChange={setDateRange}
+            />
           </div>
 
           <div ref={chartRef} className="bg-background h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ChartContainer config={chartConfig} className="h-full w-full">
               <LineChart data={points}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -161,22 +159,24 @@ export function ClientProgressView() {
                   tickFormatter={formatTick}
                 />
                 <YAxis />
-                <Tooltip labelFormatter={formatLabel} />
+                <ChartTooltip
+                  content={<ChartTooltipContent labelFormatter={formatLabel} />}
+                />
                 {selectedExercise?.isUnilateral ? (
                   <>
-                    <Legend />
+                    <ChartLegend content={<ChartLegendContent />} />
                     <Line
                       type="monotone"
                       dataKey="left"
                       name="Lewa"
-                      stroke="#60a5fa"
+                      stroke="var(--color-left)"
                       connectNulls
                     />
                     <Line
                       type="monotone"
                       dataKey="right"
                       name="Prawa"
-                      stroke="#f87171"
+                      stroke="var(--color-right)"
                       connectNulls
                     />
                   </>
@@ -185,12 +185,12 @@ export function ClientProgressView() {
                     type="monotone"
                     dataKey="value"
                     name={selectedExercise?.name}
-                    stroke="#ffffff"
+                    stroke="var(--color-value)"
                     connectNulls
                   />
                 )}
               </LineChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </div>
 
           <Button

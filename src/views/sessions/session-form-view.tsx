@@ -1,5 +1,6 @@
 import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
+import { DatePickerInput } from "@maat-apps/ui/date-picker";
 import { Input } from "@maat-apps/ui/input";
 import {
   Select,
@@ -18,6 +19,13 @@ import type { Set as ExerciseSet, Session, SessionExercise } from "@/types";
 
 const STEP_TITLES = ["Data", "Ćwiczenia", "Serie i notatki"] as const;
 const LAST_STEP = STEP_TITLES.length;
+
+function toISODateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 function emptySet(setNumber: number): ExerciseSet {
   return {
@@ -164,14 +172,13 @@ export function SessionFormView() {
 
       {step === 1 && (
         <div className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1">
-            Data (opcjonalnie)
-            <Input
-              type="date"
-              value={date ?? ""}
-              onChange={(event) => setDate(event.target.value)}
-            />
-          </label>
+          <DatePickerInput
+            label="Data (opcjonalnie)"
+            value={date ? new Date(`${date}T00:00:00`) : undefined}
+            onValueChange={(nextDate) =>
+              setDate(nextDate ? toISODateString(nextDate) : "")
+            }
+          />
           <Button type="button" onClick={() => setStep(2)}>
             Dalej
           </Button>
