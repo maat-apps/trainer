@@ -1,5 +1,6 @@
 import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
+import { DatePickerInput } from "@maat-apps/ui/date-picker";
 import { Input } from "@maat-apps/ui/input";
 import {
   Select,
@@ -14,6 +15,17 @@ import { useNavigate, useParams } from "react-router";
 import { useAppData } from "@/hooks/use-store";
 import { saveClient } from "@/lib/storage";
 import type { Period } from "@/types";
+
+function toISODateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function parseISODateString(value: string): Date | undefined {
+  return value ? new Date(`${value}T00:00:00`) : undefined;
+}
 
 export function PeriodFormView() {
   const { clientId, periodId } = useParams();
@@ -96,22 +108,20 @@ export function PeriodFormView() {
             onChange={(event) => setLabel(event.target.value)}
           />
         </label>
-        <label className="flex flex-col gap-1">
-          Data rozpoczęcia
-          <Input
-            type="date"
-            value={startDate ?? ""}
-            onChange={(event) => setStartDate(event.target.value)}
-          />
-        </label>
-        <label className="flex flex-col gap-1">
-          Data zakończenia
-          <Input
-            type="date"
-            value={endDate ?? ""}
-            onChange={(event) => setEndDate(event.target.value)}
-          />
-        </label>
+        <DatePickerInput
+          label="Data rozpoczęcia"
+          value={parseISODateString(startDate)}
+          onValueChange={(nextDate) =>
+            setStartDate(nextDate ? toISODateString(nextDate) : "")
+          }
+        />
+        <DatePickerInput
+          label="Data zakończenia"
+          value={parseISODateString(endDate)}
+          onValueChange={(nextDate) =>
+            setEndDate(nextDate ? toISODateString(nextDate) : "")
+          }
+        />
         <div className="mt-2 flex gap-2">
           <Button type="submit">Zapisz</Button>
           {existing && (

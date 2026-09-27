@@ -1,6 +1,15 @@
 import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
-import { Input } from "@maat-apps/ui/input";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@maat-apps/ui/chart";
+import {
+  DateRangePickerInput,
+  type DateRangeValue,
+} from "@maat-apps/ui/date-picker";
 import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -8,8 +17,6 @@ import {
   Line,
   LineChart,
   ReferenceArea,
-  ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
@@ -21,6 +28,10 @@ import {
   buildWeightSeries,
   filterByDateRange,
 } from "@/lib/weight-chart";
+
+const weightChartConfig: ChartConfig = {
+  weight: { label: "Waga", color: "#ffffff" },
+};
 
 function formatTick(x: number): string {
   if (x < 0) return "";
@@ -39,8 +50,7 @@ export function ClientWeightView() {
   const chartRef = useRef<HTMLDivElement>(null);
   const backTo = clientId ? `/clients/${clientId}` : "/";
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [dateRange, setDateRange] = useState<DateRangeValue | undefined>();
   const [shareStatus, setShareStatus] = useState<string | null>(null);
 
   if (!client) {
@@ -59,8 +69,8 @@ export function ClientWeightView() {
   const rawPoints = buildWeightSeries(client.weightLogs);
   const points = filterByDateRange(
     rawPoints,
-    startDate || null,
-    endDate || null,
+    dateRange?.from?.toISOString() ?? null,
+    dateRange?.to?.toISOString() ?? null,
   );
   const bands = buildPeriodBands(client.periods);
 
@@ -89,27 +99,22 @@ export function ClientWeightView() {
         </p>
       ) : (
         <>
-          <div className="mb-4 flex gap-2">
-            <label className="flex flex-1 flex-col gap-1 text-sm">
-              Od
-              <Input
-                type="date"
-                value={startDate}
-                onChange={(event) => setStartDate(event.target.value)}
-              />
-            </label>
-            <label className="flex flex-1 flex-col gap-1 text-sm">
-              Do
-              <Input
-                type="date"
-                value={endDate}
-                onChange={(event) => setEndDate(event.target.value)}
-              />
-            </label>
+          <div className="mb-4">
+            <DateRangePickerInput
+              label="Zakres dat"
+              startLabel="Od"
+              endLabel="Do"
+              numberOfMonths={1}
+              value={dateRange}
+              onValueChange={setDateRange}
+            />
           </div>
 
           <div ref={chartRef} className="bg-background h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ChartContainer
+              config={weightChartConfig}
+              className="h-full w-full"
+            >
               <LineChart data={points}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -119,7 +124,9 @@ export function ClientWeightView() {
                   tickFormatter={formatTick}
                 />
                 <YAxis domain={["auto", "auto"]} />
-                <Tooltip labelFormatter={formatLabel} />
+                <ChartTooltip
+                  content={<ChartTooltipContent labelFormatter={formatLabel} />}
+                />
                 {bands.map((band) => (
                   <ReferenceArea
                     key={band.id}
@@ -134,11 +141,11 @@ export function ClientWeightView() {
                   type="monotone"
                   dataKey="weight"
                   name="Waga"
-                  stroke="#ffffff"
+                  stroke="var(--color-weight)"
                   connectNulls
                 />
               </LineChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </div>
 
           <Button

@@ -1,23 +1,16 @@
 @import "tailwindcss";
 @import "shadcn/tailwind.css";
+@import "@maat-apps/ui/date-picker.css";
 
 /* @maat-apps/ui's compiled component files live in node_modules, which
    Tailwind doesn't scan by default — without this, their classes would
-   be silently purged. Scoped to just the compiled files actually
-   imported, not the whole package, so an unused component doesn't bloat
-   the bundle — widen this if more @maat-apps/ui components get imported
-   later. See @maat-apps/ui's own README. */
-@source "../../node_modules/@maat-apps/ui/dist/app-bar.js";
-@source "../../node_modules/@maat-apps/ui/dist/button.js";
-@source "../../node_modules/@maat-apps/ui/dist/drag-handle.js";
-@source "../../node_modules/@maat-apps/ui/dist/drawer.js";
-@source "../../node_modules/@maat-apps/ui/dist/empty-state.js";
-@source "../../node_modules/@maat-apps/ui/dist/fab-button.js";
-@source "../../node_modules/@maat-apps/ui/dist/input.js";
-@source "../../node_modules/@maat-apps/ui/dist/mobile-gate.js";
-@source "../../node_modules/@maat-apps/ui/dist/page-header.js";
-@source "../../node_modules/@maat-apps/ui/dist/select.js";
-@source "../../node_modules/@maat-apps/ui/dist/settings-primitives.js";
+   be silently purged. Used to be scoped to just the individual compiled
+   files this app imported, but Chart and DatePicker pull in several
+   more internal components (field.js, popover.js, ...) via tsup's
+   shared, content-hashed chunk-*.js files, which can't be listed by a
+   stable per-file path — so this now scans the whole dist/ per
+   @maat-apps/ui's own README. */
+@source "../../node_modules/@maat-apps/ui/dist";
 
 /* MobileGate's phone-sized:block/phone-sized:hidden classes are the one
    thing not worth a whole-file @source scan for (see the trainer#6
@@ -99,4 +92,33 @@
 button,
 input {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* @maat-apps/ui's Input defaults to a compact h-8 (32px) touch target —
+   bump all fields, including the DatePicker trigger (its wrapper has no
+   height of its own; icon/clear button stay centered via absolute
+   positioning), to match this app's larger, thumb-friendly sizing,
+   closer to what routines applies ad hoc per field (h-11 to h-13,
+   text-base). */
+[data-slot="input"],
+[data-slot="textarea"] {
+  height: 3rem;
+  padding-block: 0.5rem;
+  font-size: 1rem;
+}
+
+textarea[data-slot="textarea"] {
+  height: auto;
+  min-height: 3rem;
+}
+
+/* TEMPORARY: @maat-apps/ui@0.3.0's date-picker.css has a selector bug —
+   `.rdp-input_surface [data-slot="input"]` uses a descendant combinator,
+   but both classes land on the same <input>, so the padding that clears
+   the calendar icon never applies. Fixed upstream (maat-apps/maat-core,
+   branch fix/date-picker-input-surface-selector) but not yet published.
+   Remove this override once that fix ships in a new @maat-apps/ui
+   version and this app upgrades to it. */
+.rdp-input_surface[data-slot="input"] {
+  padding-inline-start: 2.25rem !important;
 }
