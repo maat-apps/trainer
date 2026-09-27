@@ -118,6 +118,56 @@ describe("clients", () => {
       { ...base, firstName: "Janusz" },
     ]);
   });
+
+  it("reorders clients to match the given id order", async () => {
+    const storage = await freshStorage();
+    const client = (id: string) => ({
+      id,
+      firstName: id,
+      lastName: null,
+      goal: null,
+      notes: null,
+      createdAt: "2026-01-01",
+      sessions: [],
+      weightLogs: [],
+      periods: [],
+    });
+    storage.saveClient(client("1"));
+    storage.saveClient(client("2"));
+    storage.saveClient(client("3"));
+
+    storage.reorderClients(["3", "1", "2"]);
+
+    expect(storage.getDataSnapshot().clients.map((c) => c.id)).toEqual([
+      "3",
+      "1",
+      "2",
+    ]);
+  });
+
+  it("keeps clients not present in the given order, in their original relative order", async () => {
+    const storage = await freshStorage();
+    const client = (id: string) => ({
+      id,
+      firstName: id,
+      lastName: null,
+      goal: null,
+      notes: null,
+      createdAt: "2026-01-01",
+      sessions: [],
+      weightLogs: [],
+      periods: [],
+    });
+    storage.saveClient(client("1"));
+    storage.saveClient(client("2"));
+
+    storage.reorderClients(["2"]);
+
+    expect(storage.getDataSnapshot().clients.map((c) => c.id)).toEqual([
+      "2",
+      "1",
+    ]);
+  });
 });
 
 describe("replaceAllData", () => {
