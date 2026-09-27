@@ -53,13 +53,12 @@ jobs:
         run: npm run build
 
       # main's own deploy shares the Pages site with any open PR previews
-      # (see ci.yml's preview-build/preview-deploy jobs), which live in
-      # their own pr-<n>/ subpath. The `pages-content` branch is this
-      # workflow's own storage — not the Pages source (that's still
-      # "GitHub Actions", set via configure-pages below) — used only to
-      # assemble main's root alongside whatever preview subdirectories
-      # currently exist before every deploy re-uploads the whole tree as
-      # one artifact.
+      # (see deploy-preview.yml), which live in their own pr-<n>/ subpath.
+      # The `pages-content` branch is this workflow's own storage — not
+      # the Pages source (that's still "GitHub Actions", set via
+      # configure-pages below) — used only to assemble main's root
+      # alongside whatever preview subdirectories currently exist before
+      # every deploy re-uploads the whole tree as one artifact.
       - name: Checkout pages-content workspace
         uses: actions/checkout@v5
         with:
