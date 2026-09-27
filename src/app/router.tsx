@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 
-import { AppLayout } from "@/components/app-bar";
+import { AppLayout } from "@/components/bottom-nav";
 
 const ClientListView = lazy(() =>
   import("@/views/clients/client-list-view").then((m) => ({
