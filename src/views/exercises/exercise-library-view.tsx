@@ -5,13 +5,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@maat-apps/ui/select";
+import { Plus } from "@phosphor-icons/react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
+import { FabButton } from "@maat-apps/ui/fab-button";
 import { PageHeader } from "@maat-apps/ui/page-header";
 
 export function ExerciseLibraryView() {
+  const navigate = useNavigate();
   const { categories, exercises } = useAppData();
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
@@ -35,9 +38,6 @@ export function ExerciseLibraryView() {
     <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
       <PageHeader>
         <h1 className="font-heading text-xl font-semibold">Ćwiczenia</h1>
-        <Link to="/exercises/new" className="underline">
-          + Dodaj ćwiczenie
-        </Link>
       </PageHeader>
 
       {categories.length > 0 && (
@@ -88,6 +88,13 @@ export function ExerciseLibraryView() {
           ))}
         </ul>
       )}
+      <FabButton
+        className="fixed right-[max(20px,calc((100vw-480px)/2+20px))] bottom-[calc(84px+env(safe-area-inset-bottom))] z-20"
+        ariaLabel="Dodaj ćwiczenie"
+        onClick={() => navigate("/exercises/new")}
+      >
+        <Plus className="size-6" />
+      </FabButton>
     </div>
   );
 }
