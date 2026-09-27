@@ -1,3 +1,4 @@
+import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
 import {
@@ -65,10 +66,12 @@ export function ExerciseFormView() {
   }
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <h1 className="mb-4 text-xl">
-        {existing ? "Edytuj ćwiczenie" : "Nowe ćwiczenie"}
-      </h1>
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <AppBar
+        title={existing ? "Edytuj ćwiczenie" : "Nowe ćwiczenie"}
+        backLabel="Wstecz"
+        onBack={() => navigate("/exercises")}
+      />
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1">
           Nazwa
@@ -128,6 +131,6 @@ export function ExerciseFormView() {
           )}
         </div>
       </form>
-    </main>
+    </div>
   );
 }

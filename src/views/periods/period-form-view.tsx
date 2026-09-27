@@ -1,3 +1,4 @@
+import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
 import {
@@ -20,6 +21,7 @@ export function PeriodFormView() {
   const { clients } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const existing = client?.periods.find((item) => item.id === periodId);
+  const backTo = clientId ? `/clients/${clientId}` : "/";
 
   const [type, setType] = useState<Period["type"]>(existing?.type ?? "mass");
   const [label, setLabel] = useState(existing?.label ?? "");
@@ -28,9 +30,14 @@ export function PeriodFormView() {
 
   if (!client) {
     return (
-      <main className="mx-auto max-w-md p-4">
+      <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+        <AppBar
+          title={existing ? "Edytuj okres" : "Nowy okres"}
+          backLabel="Wstecz"
+          onBack={() => navigate(backTo)}
+        />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
-      </main>
+      </div>
     );
   }
 
@@ -60,10 +67,12 @@ export function PeriodFormView() {
   };
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <h1 className="mb-4 text-xl">
-        {existing ? "Edytuj okres" : "Nowy okres"}
-      </h1>
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <AppBar
+        title={existing ? "Edytuj okres" : "Nowy okres"}
+        backLabel="Wstecz"
+        onBack={() => navigate(backTo)}
+      />
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-1">
           <span>Typ</span>
@@ -112,6 +121,6 @@ export function PeriodFormView() {
           )}
         </div>
       </form>
-    </main>
+    </div>
   );
 }

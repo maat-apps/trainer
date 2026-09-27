@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
+import { PageHeader } from "@maat-apps/ui/page-header";
 
 export function ExerciseLibraryView() {
   const { categories, exercises } = useAppData();
@@ -31,13 +32,13 @@ export function ExerciseLibraryView() {
   }
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl">Ćwiczenia</h1>
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <PageHeader>
+        <h1 className="font-heading text-xl font-semibold">Ćwiczenia</h1>
         <Link to="/exercises/new" className="underline">
           + Dodaj ćwiczenie
         </Link>
-      </div>
+      </PageHeader>
 
       {categories.length > 0 && (
         <div className="mb-4 flex flex-col gap-1 text-sm">
@@ -87,6 +88,6 @@ export function ExerciseLibraryView() {
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 }

@@ -1,3 +1,4 @@
+import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
 import {
@@ -8,7 +9,7 @@ import {
   SelectValue,
 } from "@maat-apps/ui/select";
 import { useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   CartesianGrid,
   Legend,
@@ -39,9 +40,11 @@ function formatLabel(x: unknown): string {
 
 export function ClientProgressView() {
   const { clientId } = useParams();
+  const navigate = useNavigate();
   const { clients, exercises } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const chartRef = useRef<HTMLDivElement>(null);
+  const backTo = clientId ? `/clients/${clientId}` : "/";
 
   const loggedIds = client ? loggedExerciseIds(client.sessions) : [];
   const availableExercises = exercises.filter((exercise) =>
@@ -54,9 +57,14 @@ export function ClientProgressView() {
 
   if (!client) {
     return (
-      <main className="mx-auto max-w-md p-4">
+      <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+        <AppBar
+          title="Postępy"
+          backLabel="Wstecz"
+          onBack={() => navigate(backTo)}
+        />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
-      </main>
+      </div>
     );
   }
 
@@ -90,8 +98,12 @@ export function ClientProgressView() {
   };
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <h1 className="mb-4 text-xl">Postępy</h1>
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <AppBar
+        title="Postępy"
+        backLabel="Wstecz"
+        onBack={() => navigate(backTo)}
+      />
 
       {availableExercises.length === 0 ? (
         <p className="text-muted-foreground text-sm">
@@ -196,6 +208,6 @@ export function ClientProgressView() {
           )}
         </>
       )}
-    </main>
+    </div>
   );
 }

@@ -1,3 +1,4 @@
+import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
 import { type FormEvent, useState } from "react";
@@ -17,6 +18,7 @@ export function ClientFormView() {
   const navigate = useNavigate();
   const { clients } = useAppData();
   const existing = clients.find((client) => client.id === clientId);
+  const backTo = existing ? `/clients/${existing.id}` : "/";
 
   const [firstName, setFirstName] = useState(existing?.firstName ?? "");
   const [lastName, setLastName] = useState(existing?.lastName ?? "");
@@ -41,10 +43,12 @@ export function ClientFormView() {
   }
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <h1 className="mb-4 text-xl">
-        {existing ? "Edytuj klienta" : "Nowy klient"}
-      </h1>
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <AppBar
+        title={existing ? "Edytuj klienta" : "Nowy klient"}
+        backLabel="Wstecz"
+        onBack={() => navigate(backTo)}
+      />
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1">
           Imię
@@ -79,6 +83,6 @@ export function ClientFormView() {
           Zapisz
         </Button>
       </form>
-    </main>
+    </div>
   );
 }

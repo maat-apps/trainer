@@ -1,18 +1,19 @@
 import { Link } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
+import { PageHeader } from "@maat-apps/ui/page-header";
 
 export function ClientListView() {
   const { clients } = useAppData();
 
   return (
-    <main className="mx-auto max-w-md p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl">Klienci</h1>
+    <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
+      <PageHeader>
+        <h1 className="font-heading text-xl font-semibold">Klienci</h1>
         <Link to="/clients/new" className="underline">
           + Dodaj klienta
         </Link>
-      </div>
+      </PageHeader>
       {clients.length === 0 ? (
         <p className="text-muted-foreground">Brak klientów.</p>
       ) : (
@@ -27,6 +28,6 @@ export function ClientListView() {
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 }
