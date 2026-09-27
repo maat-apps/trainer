@@ -29,6 +29,21 @@ describe("categories", () => {
     storage.deleteCategory("1");
     expect(storage.getDataSnapshot().categories).toEqual([]);
   });
+
+  it("clears the category from exercises that referenced it, without deleting them", async () => {
+    const storage = await freshStorage();
+    storage.saveCategory({ id: "1", name: "Legs" });
+    storage.saveExercise({
+      id: "e1",
+      name: "Squat",
+      categoryId: "1",
+      isUnilateral: false,
+    });
+    storage.deleteCategory("1");
+    expect(storage.getDataSnapshot().exercises).toEqual([
+      { id: "e1", name: "Squat", categoryId: null, isUnilateral: false },
+    ]);
+  });
 });
 
 describe("exercises", () => {
