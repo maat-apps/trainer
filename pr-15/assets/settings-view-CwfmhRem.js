@@ -1,0 +1,1 @@
+import{j as t}from"./index-CjB9DnD4.js";function e(){return t.jsxs("main",{className:"mx-auto max-w-md p-4",children:[t.jsx("h1",{className:"mb-2 text-xl",children:"Ustawienia"}),t.jsx("p",{className:"text-muted-foreground text-sm",children:"Eksport i import danych pojawi się tutaj (patrz #9)."})]})}export{e as SettingsView};
