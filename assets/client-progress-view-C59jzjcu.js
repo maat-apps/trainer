@@ -1,0 +1,1 @@
+import{u as e,j as s}from"./index-C5AM9JNR.js";function r(){const{clientId:t}=e();return s.jsxs("main",{className:"mx-auto max-w-md p-4",children:[s.jsx("h1",{className:"mb-2 text-xl",children:"Postępy"}),s.jsxs("p",{className:"text-muted-foreground text-sm",children:["Wykres postępów dla klienta ",t," pojawi się tutaj (patrz #6)."]})]})}export{r as ClientProgressView};
