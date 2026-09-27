@@ -1,10 +1,10 @@
-import { Dumbbell, Settings, Users } from "lucide-react";
+import { Barbell, Gear, Users } from "@phosphor-icons/react";
 import { NavLink, Outlet } from "react-router";
 
 const navItems = [
   { to: "/", end: true, label: "Klienci", Icon: Users },
-  { to: "/exercises", end: false, label: "Ćwiczenia", Icon: Dumbbell },
-  { to: "/settings", end: false, label: "Ustawienia", Icon: Settings },
+  { to: "/exercises", end: false, label: "Ćwiczenia", Icon: Barbell },
+  { to: "/settings", end: false, label: "Ustawienia", Icon: Gear },
 ] as const;
 
 const linkClassName = ({ isActive }: { isActive: boolean }) =>
