@@ -43,6 +43,11 @@ const SettingsView = lazy(() =>
     default: m.SettingsView,
   })),
 );
+const SessionFormView = lazy(() =>
+  import("@/views/sessions/session-form-view").then((m) => ({
+    default: m.SessionFormView,
+  })),
+);
 
 export function AppRouter() {
   return (
@@ -60,6 +65,14 @@ export function AppRouter() {
           <Route
             path="/clients/:clientId/weight"
             element={<ClientWeightView />}
+          />
+          <Route
+            path="/clients/:clientId/sessions/new"
+            element={<SessionFormView />}
+          />
+          <Route
+            path="/clients/:clientId/sessions/:sessionId"
+            element={<SessionFormView />}
           />
           <Route path="/exercises" element={<ExerciseLibraryView />} />
           <Route path="/exercises/new" element={<ExerciseFormView />} />
