@@ -1,3 +1,12 @@
+import { Button } from "@maat-apps/ui/button";
+import { Input } from "@maat-apps/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@maat-apps/ui/select";
 import { useRef, useState } from "react";
 import { useParams } from "react-router";
 import {
@@ -91,35 +100,37 @@ export function ClientProgressView() {
       ) : (
         <>
           <div className="mb-4 flex flex-col gap-3">
-            <label className="flex flex-col gap-1 text-sm">
-              Ćwiczenie
-              <select
-                className="border-muted-foreground/40 rounded border bg-transparent p-2"
+            <div className="flex flex-col gap-1 text-sm">
+              <span>Ćwiczenie</span>
+              <Select
                 value={exerciseId}
-                onChange={(event) => setExerciseId(event.target.value)}
+                onValueChange={(value) => setExerciseId(value ?? "")}
               >
-                {availableExercises.map((exercise) => (
-                  <option key={exercise.id} value={exercise.id}>
-                    {exercise.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <SelectTrigger aria-label="Ćwiczenie">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableExercises.map((exercise) => (
+                    <SelectItem key={exercise.id} value={exercise.id}>
+                      {exercise.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="flex gap-2">
               <label className="flex flex-1 flex-col gap-1 text-sm">
                 Od
-                <input
+                <Input
                   type="date"
-                  className="border-muted-foreground/40 rounded border bg-transparent p-2"
                   value={startDate}
                   onChange={(event) => setStartDate(event.target.value)}
                 />
               </label>
               <label className="flex flex-1 flex-col gap-1 text-sm">
                 Do
-                <input
+                <Input
                   type="date"
-                  className="border-muted-foreground/40 rounded border bg-transparent p-2"
                   value={endDate}
                   onChange={(event) => setEndDate(event.target.value)}
                 />
@@ -170,13 +181,14 @@ export function ClientProgressView() {
             </ResponsiveContainer>
           </div>
 
-          <button
+          <Button
             type="button"
-            className="border-muted-foreground/40 mt-4 rounded border p-2"
+            variant="outline"
+            className="mt-4"
             onClick={() => void handleShare()}
           >
             Eksportuj i udostępnij
-          </button>
+          </Button>
           {shareStatus && (
             <p role="status" className="mt-2 text-sm">
               {shareStatus}

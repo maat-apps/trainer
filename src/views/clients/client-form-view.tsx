@@ -1,6 +1,9 @@
+import { Button } from "@maat-apps/ui/button";
+import { Input } from "@maat-apps/ui/input";
 import { type FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
+import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/hooks/use-store";
 import { saveClient } from "@/lib/storage";
 
@@ -45,8 +48,7 @@ export function ClientFormView() {
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1">
           Imię
-          <input
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+          <Input
             value={firstName}
             onChange={(event) => setFirstName(event.target.value)}
             required
@@ -54,34 +56,28 @@ export function ClientFormView() {
         </label>
         <label className="flex flex-col gap-1">
           Nazwisko
-          <input
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+          <Input
             value={lastName}
             onChange={(event) => setLastName(event.target.value)}
           />
         </label>
         <label className="flex flex-col gap-1">
           Cel
-          <input
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+          <Input
             value={goal}
             onChange={(event) => setGoal(event.target.value)}
           />
         </label>
         <label className="flex flex-col gap-1">
           Notatki
-          <textarea
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+          <Textarea
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
           />
         </label>
-        <button
-          type="submit"
-          className="border-muted-foreground/40 mt-2 rounded border p-2"
-        >
+        <Button type="submit" className="mt-2">
           Zapisz
-        </button>
+        </Button>
       </form>
     </main>
   );

@@ -16,7 +16,7 @@ What follows here is what's specific to **trainer**.
 ## Project Snapshot
 
 - Vite + React + TypeScript, Tailwind v4, shadcn (`base-nova`).
-- Mobile-only (`src/components/mobile-gate.tsx`), like routines.
+- Mobile-only (`@maat-apps/ui`'s `MobileGate`, used from `src/app/root.tsx`), like routines.
 
 ## Commands
 
@@ -45,6 +45,24 @@ What follows here is what's specific to **trainer**.
   directly, not Playwright's own `test.extend()` fixture-injection system.
 - Full pattern log: none yet — run `/learn-patterns` after a non-trivial
   session to start one.
+- **UI stack.** `Button`/`Input`/`Select` come from
+  [`@maat-apps/ui`](https://www.npmjs.com/package/@maat-apps/ui)
+  (`@maat-apps/ui/button`, `/input`, `/select`) rather than local
+  `src/components/ui/` copies — prefer that package over regenerating
+  shadcn primitives by hand. `Textarea` (`src/components/ui/textarea.tsx`)
+  is the one form primitive the package doesn't ship, kept local per the
+  usual shadcn `npx shadcn add` convention. Base UI's `Select` renders via
+  a portal, not a native `<select>` — e2e specs interact with it as
+  `getByRole("combobox", { name })` + `getByRole("option", { name })`,
+  not `.selectOption()`. `src/app/globals.css`'s `@source` lines are
+  scoped to just the package's compiled `button.js`/`input.js`/
+  `select.js` (not the whole `dist/`) since this app doesn't use every
+  component the package ships — widen them if more get imported. The
+  design tokens in that same file (colors, radii) are required for these
+  components' classes (`bg-primary`, `border-input`, etc.) to resolve to
+  anything — don't remove them even if they look unused at a glance.
+  `src/lib/utils.ts` re-exports `cn` from the `cn` npm package, matching
+  the alias `components.json` declares.
 
 ## Workflow Rules
 

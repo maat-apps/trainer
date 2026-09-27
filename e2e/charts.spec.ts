@@ -34,6 +34,8 @@ test("progress chart renders for a logged exercise", async ({ page }) => {
   await page.getByRole("button", { name: "Zapisz sesję" }).click();
 
   await page.getByRole("link", { name: "Zobacz wykres postępów" }).click();
-  await expect(page.getByLabel("Ćwiczenie")).toHaveValue(/./);
+  await expect(page.getByRole("combobox", { name: "Ćwiczenie" })).toHaveText(
+    /./,
+  );
   await expect(page.locator("svg").first()).toBeVisible();
 });

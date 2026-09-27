@@ -1,3 +1,12 @@
+import { Button } from "@maat-apps/ui/button";
+import { Input } from "@maat-apps/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@maat-apps/ui/select";
 import { type FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -21,9 +30,10 @@ export function ExerciseFormView() {
     existing?.isUnilateral ?? false,
   );
 
-  function handleCategoryChange(value: string) {
-    setCategoryId(value);
-    if (value !== NEW_CATEGORY_VALUE) {
+  function handleCategoryChange(value: string | null) {
+    const resolved = value ?? "";
+    setCategoryId(resolved);
+    if (resolved !== NEW_CATEGORY_VALUE) {
       setNewCategoryName("");
     }
   }
@@ -62,36 +72,37 @@ export function ExerciseFormView() {
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1">
           Nazwa
-          <input
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
+          <Input
             value={name}
             onChange={(event) => setName(event.target.value)}
             required
           />
         </label>
 
-        <label className="flex flex-col gap-1">
-          Kategoria
-          <select
-            className="border-muted-foreground/40 rounded border bg-transparent p-2"
-            value={categoryId}
-            onChange={(event) => handleCategoryChange(event.target.value)}
-          >
-            <option value="">Bez kategorii</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-            <option value={NEW_CATEGORY_VALUE}>+ Nowa kategoria</option>
-          </select>
-        </label>
+        <div className="flex flex-col gap-1">
+          <span>Kategoria</span>
+          <Select value={categoryId} onValueChange={handleCategoryChange}>
+            <SelectTrigger aria-label="Kategoria">
+              <SelectValue placeholder="Bez kategorii" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Bez kategorii</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+              <SelectItem value={NEW_CATEGORY_VALUE}>
+                + Nowa kategoria
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         {categoryId === NEW_CATEGORY_VALUE && (
           <label className="flex flex-col gap-1">
             Nazwa nowej kategorii
-            <input
-              className="border-muted-foreground/40 rounded border bg-transparent p-2"
+            <Input
               value={newCategoryName}
               onChange={(event) => setNewCategoryName(event.target.value)}
               required
@@ -109,20 +120,11 @@ export function ExerciseFormView() {
         </label>
 
         <div className="mt-2 flex gap-2">
-          <button
-            type="submit"
-            className="border-muted-foreground/40 rounded border p-2"
-          >
-            Zapisz
-          </button>
+          <Button type="submit">Zapisz</Button>
           {existing && (
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="border-muted-foreground/40 rounded border p-2"
-            >
+            <Button type="button" variant="outline" onClick={handleDelete}>
               Usuń
-            </button>
+            </Button>
           )}
         </div>
       </form>
