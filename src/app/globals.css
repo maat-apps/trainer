@@ -1,8 +1,19 @@
 @import "tailwindcss";
 
-/* Only needed if this app uses src/components/mobile-gate.tsx (mobile-only
-   apps) — matches the viewport routines treats as "phone-sized". Drop this
-   if the app supports desktop and doesn't use MobileGate. */
+/* @maat-apps/ui's MobileGate (used in src/app/root.tsx) renders
+   phone-sized:block/phone-sized:hidden, but it lives in node_modules,
+   which Tailwind doesn't scan by default — without this, those classes
+   would be silently purged. `@source inline(...)` force-generates exactly
+   these classes without scanning the package's files at all (pointing
+   @source at the package's compiled dist/ instead pulled in every other
+   component's classes too, even unused ones, and inflated the CSS bundle
+   ~4x). Add more names here if another @maat-apps/ui component gets used
+   later. See @maat-apps/ui's own README. */
+@source inline("phone-sized:{block,hidden}");
+
+/* Matches the viewport routines/MobileGate treats as "phone-sized". Drop
+   this (and the @source line above) if the app ever supports desktop and
+   drops MobileGate. */
 @custom-variant phone-sized (@media (max-width: 481px), @media (max-height: 481px) and (orientation: landscape));
 
 :root {

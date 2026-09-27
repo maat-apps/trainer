@@ -25,6 +25,7 @@
     "validate:fix": "npm run lint:fix && npm run format && npm audit fix"
   },
   "dependencies": {
+    "@maat-apps/ui": "^0.1.0",
     "html-to-image": "^1.11.13",
     "react": "^19",
     "react-dom": "^19",
