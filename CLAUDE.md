@@ -63,6 +63,14 @@ What follows here is what's specific to **trainer**.
   anything — don't remove them even if they look unused at a glance.
   `src/lib/utils.ts` re-exports `cn` from the `cn` npm package, matching
   the alias `components.json` declares.
+- **Navigation.** App-wide bottom nav (Klienci / Ćwiczenia / Ustawienia),
+  `src/components/bottom-nav.tsx`'s `AppLayout` — fixed to the viewport
+  bottom, `flex justify-around` across three `NavLink`s (icon + label),
+  not a top header bar. Every route renders through its nested `<Outlet/>`
+  (wired in `src/app/router.tsx`), wrapped in a `pb-16` div so the fixed
+  bar never covers the last bit of scrolled content — add the same bottom
+  padding to any new full-screen view that doesn't go through that
+  wrapper.
 
 ## Workflow Rules
 
