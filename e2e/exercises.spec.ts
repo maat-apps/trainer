@@ -19,7 +19,6 @@ test("adding an exercise with a new category shows it in the library", async ({
   await page.getByLabel("Ćwiczenie jednostronne").check();
   await page.getByRole("button", { name: "Zapisz" }).click();
 
-  await expect(page.getByRole("link", { name: "Przysiad" })).toBeVisible();
-  await expect(page.getByText("(Nogi)")).toBeVisible();
-  await expect(page.getByText("jednostronne")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Przysiad/ })).toBeVisible();
+  await expect(page.getByText("Nogi · jednostronne")).toBeVisible();
 });

@@ -5,11 +5,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@maat-apps/ui/select";
-import { Plus } from "@phosphor-icons/react";
+import { CaretRight, Plus } from "@phosphor-icons/react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
+import { exerciseIcon } from "@/lib/exercise-icons";
 import { EmptyState } from "@maat-apps/ui/empty-state";
 import { FabButton } from "@maat-apps/ui/fab-button";
 import { PageHeader } from "@maat-apps/ui/page-header";
@@ -82,27 +83,35 @@ export function ExerciseLibraryView() {
           <p className="text-muted-foreground">Brak ćwiczeń w tej kategorii.</p>
         )
       ) : (
-        <ul className="flex flex-col gap-2">
-          {visibleExercises.map((exercise) => (
-            <li key={exercise.id}>
-              <Link to={`/exercises/${exercise.id}/edit`} className="underline">
-                {exercise.name}
-              </Link>
-              {categoryName(exercise.categoryId) && (
-                <span className="text-muted-foreground text-sm">
-                  {" "}
-                  ({categoryName(exercise.categoryId)})
+        <section className="grid grid-cols-[minmax(0,1fr)] gap-2.5">
+          {visibleExercises.map((exercise) => {
+            const Icon = exerciseIcon(exercise.iconName);
+            const category = categoryName(exercise.categoryId);
+            return (
+              <button
+                key={exercise.id}
+                type="button"
+                className="bg-card text-card-foreground active:bg-muted [&>svg]:text-muted-foreground flex min-h-18 w-full items-center gap-3.5 rounded-lg border-0 py-3.5 pr-4 pl-4 text-left transition-colors"
+                onClick={() => navigate(`/exercises/${exercise.id}/edit`)}
+              >
+                <Icon className="size-6 flex-none" aria-hidden="true" />
+                <span className="grid min-w-0 flex-1 gap-1.5">
+                  <strong className="font-heading overflow-hidden text-lg font-semibold text-ellipsis whitespace-nowrap">
+                    {exercise.name}
+                  </strong>
+                  {(category || exercise.isUnilateral) && (
+                    <span className="text-muted-foreground text-sm">
+                      {[category, exercise.isUnilateral ? "jednostronne" : null]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  )}
                 </span>
-              )}
-              {exercise.isUnilateral && (
-                <span className="text-muted-foreground text-sm">
-                  {" "}
-                  · jednostronne
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
+                <CaretRight aria-hidden="true" />
+              </button>
+            );
+          })}
+        </section>
       )}
       <FabButton
         className="fixed right-[max(20px,calc((100vw-480px)/2+20px))] bottom-[calc(84px+env(safe-area-inset-bottom))] z-20"

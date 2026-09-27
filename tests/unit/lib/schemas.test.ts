@@ -40,7 +40,15 @@ describe("parseExercises", () => {
       name: "Squat",
       categoryId: null,
       isUnilateral: false,
+      iconName: null,
     });
+  });
+
+  it("keeps an explicit iconName value", () => {
+    const [exercise] = parseExercises([
+      { id: "1", name: "Squat", categoryId: null, iconName: "Barbell" },
+    ]);
+    expect(exercise?.iconName).toBe("Barbell");
   });
 
   it("keeps an explicit isUnilateral value", () => {
