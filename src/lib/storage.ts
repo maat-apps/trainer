@@ -185,3 +185,26 @@ export function deleteClient(clientId: string): void {
     clients: data.clients.filter((item) => item.id !== clientId),
   });
 }
+
+export function reorderClients(orderedIds: string[]): void {
+  const data = readData();
+  const byId = new Map(data.clients.map((client) => [client.id, client]));
+  const reordered: Client[] = [];
+
+  for (const id of orderedIds) {
+    const client = byId.get(id);
+    if (client) {
+      reordered.push(client);
+      byId.delete(id);
+    }
+  }
+  // Preserve any clients not present in orderedIds (defensive) in their
+  // original relative order.
+  for (const client of data.clients) {
+    if (byId.has(client.id)) {
+      reordered.push(client);
+    }
+  }
+
+  writeData({ ...data, clients: reordered });
+}
