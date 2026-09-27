@@ -12,6 +12,7 @@ import { type FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
+import { EXERCISE_ICONS, exerciseIcon } from "@/lib/exercise-icons";
 import { deleteExercise, saveCategory, saveExercise } from "@/lib/storage";
 
 const NEW_CATEGORY_VALUE = "__new__";
@@ -29,6 +30,9 @@ export function ExerciseFormView() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isUnilateral, setIsUnilateral] = useState(
     existing?.isUnilateral ?? false,
+  );
+  const [iconName, setIconName] = useState<string | null>(
+    existing?.iconName ?? null,
   );
 
   function handleCategoryChange(value: string | null) {
@@ -55,6 +59,7 @@ export function ExerciseFormView() {
       name: name.trim(),
       categoryId: resolvedCategoryId,
       isUnilateral,
+      iconName,
     });
     navigate("/exercises");
   }
@@ -121,6 +126,37 @@ export function ExerciseFormView() {
           />
           Ćwiczenie jednostronne
         </label>
+
+        <div className="flex flex-col gap-1">
+          <span>Ikona</span>
+          <div
+            role="radiogroup"
+            aria-label="Ikona"
+            className="grid grid-cols-5 gap-2"
+          >
+            {EXERCISE_ICONS.map((name) => {
+              const Icon = exerciseIcon(name);
+              const selected = iconName === name;
+              return (
+                <button
+                  key={name}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  aria-label={name}
+                  onClick={() => setIconName(selected ? null : name)}
+                  className={`flex aspect-square items-center justify-center rounded-lg border transition-colors ${
+                    selected
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-input text-muted-foreground"
+                  }`}
+                >
+                  <Icon className="size-6" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="mt-2 flex gap-2">
           <Button type="submit">Zapisz</Button>

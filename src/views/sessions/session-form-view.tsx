@@ -102,6 +102,7 @@ export function SessionFormView() {
       name: trimmed,
       categoryId: null,
       isUnilateral: false,
+      iconName: null,
     };
     saveExercise(newExercise);
     addExerciseToSession(newExercise.id);

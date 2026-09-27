@@ -15,6 +15,7 @@ export const ExerciseSchema = v.object({
   name: v.string(),
   categoryId: v.nullable(v.string()),
   isUnilateral: v.fallback(v.boolean(), false),
+  iconName: v.fallback(v.nullable(v.string()), null),
 });
 
 const SetSchema = v.object({
