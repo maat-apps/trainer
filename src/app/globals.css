@@ -1,105 +1,20 @@
 @import "tailwindcss";
 @import "shadcn/tailwind.css";
+/* The Ma'at Apps theme — true black + white on Outfit, the tokens, base
+   styles, the phone-sized variant and ProgressRing's animation. Every app
+   shares it; don't redefine those tokens here. */
+@import "@maat-apps/ui/theme.css";
 @import "@maat-apps/ui/date-picker.css";
 
-/* @maat-apps/ui's compiled component files live in node_modules, which
-   Tailwind doesn't scan by default — without this, their classes would
-   be silently purged. Used to be scoped to just the individual compiled
-   files this app imported, but Chart and DatePicker pull in several
-   more internal components (field.js, popover.js, ...) via tsup's
-   shared, content-hashed chunk-*.js files, which can't be listed by a
-   stable per-file path — so this now scans the whole dist/ per
-   @maat-apps/ui's own README. */
+/* @maat-apps/ui's compiled components live in node_modules, which Tailwind
+   doesn't scan by default — without this their classes get purged. The
+   whole dist/, because shared chunk-*.js files have no stable names. */
 @source "../../node_modules/@maat-apps/ui/dist";
 
-/* MobileGate's phone-sized:block/phone-sized:hidden classes are the one
-   thing not worth a whole-file @source scan for (see the trainer#6
-   history behind this pattern) — force-generate just these two. */
-@source inline("phone-sized:{block,hidden}");
-
-/* Matches the viewport MobileGate treats as "phone-sized". Drop this (and
-   the @source line above) if the app ever supports desktop and drops
-   MobileGate. */
-@custom-variant phone-sized (@media (max-width: 481px), @media (max-height: 481px) and (orientation: landscape));
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-heading: var(--font-heading);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-}
-
-:root {
-  color-scheme: dark;
-  /* Self-hosted via @fontsource-variable (see src/main.tsx) — the same
-     ecosystem-wide typeface routines uses, never fetched from Google
-     Fonts at runtime. One family for both tokens — headings use
-     --font-heading for semantic clarity even though it currently
-     resolves the same as --font-sans. */
-  --font-sans: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.985 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.708 0 0);
-  --radius: 10px;
-  /* True black, not a dark gray — an off pixel draws ~0 power on OLED
-     screens, most phones this app targets. */
-  --background: oklch(0 0 0);
-  --foreground: oklch(0.985 0 0);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
-}
-
-button,
-input {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* @maat-apps/ui's Input defaults to a compact h-8 (32px) touch target —
-   bump all fields, including the DatePicker trigger (its wrapper has no
-   height of its own; icon/clear button stay centered via absolute
-   positioning), to match this app's larger, thumb-friendly sizing,
-   closer to what routines applies ad hoc per field (h-11 to h-13,
-   text-base). */
+/* trainer-specific: @maat-apps/ui's Input defaults to a compact h-8 (32px)
+   touch target — bump all fields, including the DatePicker trigger (its
+   wrapper has no height of its own; icon/clear button stay centered via
+   absolute positioning), to this app's larger, thumb-friendly sizing. */
 [data-slot="input"],
 [data-slot="textarea"] {
   height: 3rem;
@@ -110,15 +25,4 @@ input {
 textarea[data-slot="textarea"] {
   height: auto;
   min-height: 3rem;
-}
-
-/* TEMPORARY: @maat-apps/ui@0.3.0's date-picker.css has a selector bug —
-   `.rdp-input_surface [data-slot="input"]` uses a descendant combinator,
-   but both classes land on the same <input>, so the padding that clears
-   the calendar icon never applies. Fixed upstream (maat-apps/maat-core,
-   branch fix/date-picker-input-surface-selector) but not yet published.
-   Remove this override once that fix ships in a new @maat-apps/ui
-   version and this app upgrades to it. */
-.rdp-input_surface[data-slot="input"] {
-  padding-inline-start: 2.25rem !important;
 }
