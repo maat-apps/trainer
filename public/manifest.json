@@ -1,0 +1,18 @@
+{
+  "name": "Trainer",
+  "short_name": "Trainer",
+  "description": "Client and training progress tracking for personal trainers",
+  "start_url": "/trainer/",
+  "scope": "/trainer/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/trainer/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

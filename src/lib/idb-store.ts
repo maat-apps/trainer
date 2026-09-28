@@ -57,3 +57,10 @@ export async function kvSet(key: string, value: unknown): Promise<void> {
   transaction.objectStore(STORE_NAME).put(value, key);
   await whenComplete(transaction);
 }
+
+export async function kvDelete(key: string): Promise<void> {
+  const db = await openDatabase();
+  const transaction = db.transaction(STORE_NAME, "readwrite");
+  transaction.objectStore(STORE_NAME).delete(key);
+  await whenComplete(transaction);
+}
