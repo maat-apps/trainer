@@ -63,6 +63,15 @@ What follows here is what's specific to **trainer**.
   anything — don't remove them even if they look unused at a glance.
   `src/lib/utils.ts` re-exports `cn` from the `cn` npm package, matching
   the alias `components.json` declares.
+- **Platform plumbing** comes from
+  [`@maat-apps/core`](https://github.com/maat-apps/maat-core/tree/main/packages/core):
+  `src/lib/idb-store.ts` (`/storage`, the `"trainer"` database),
+  `app-settings.ts` (`/persisted`), `app-update.ts` (`/update`, with this
+  app's backup format as the snapshot), `src/hooks/use-install-prompt.ts`
+  (`/install`) and `src/sw.ts` (`/sw` — bump its `cacheName` when the
+  shell changes). They're thin wrappers that keep their own exports, so
+  tests import them, not core; a test needing a failing read/write spies
+  on `keyValueStore`'s `get`/`set`.
 - **Navigation.** App-wide bottom nav (Klienci / Ćwiczenia / Ustawienia),
   `src/components/bottom-nav.tsx`'s `AppLayout` — fixed to the viewport
   bottom, `flex justify-around` across three `NavLink`s (icon + label),

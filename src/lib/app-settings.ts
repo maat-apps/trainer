@@ -1,82 +1,36 @@
-import { kvGet, kvSet } from "@/lib/idb-store";
+import { createPersistedStore } from "@maat-apps/core/persisted";
+
+import { keyValueStore } from "@/lib/idb-store";
 import { SETTINGS_KEY } from "@/lib/storage-keys";
 
-// A tiny persisted-flags store, separate from storage.ts's AppData (client/
-// session data) — this holds browser/install state that isn't part of a
-// backup, same split routines' own settings.ts makes.
+// A tiny persisted-flags store (@maat-apps/core/persisted), separate from
+// storage.ts's AppData (client/session data) — this holds browser/install
+// state that isn't part of a backup, same split routines' settings.ts makes.
 export type AppSettings = {
   installed: boolean;
 };
 
-const defaultSettings: AppSettings = { installed: false };
+const settingsStore = createPersistedStore<AppSettings>({
+  storage: keyValueStore,
+  key: SETTINGS_KEY,
+  defaults: { installed: false },
+  parse: (stored) => {
+    const installed = (stored as Partial<AppSettings>).installed;
+    if (typeof installed !== "boolean") throw new Error("Invalid settings");
+    return { installed };
+  },
+});
 
-const listeners = new Set<() => void>();
-let settings: AppSettings = defaultSettings;
-let loaded: Promise<void> | null = null;
-
-function notify(): void {
-  for (const listener of listeners) {
-    listener();
-  }
-}
-
-function isAppSettings(value: unknown): value is AppSettings {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    typeof (value as AppSettings).installed === "boolean"
-  );
-}
-
-function ensureLoaded(): void {
-  if (loaded) return;
-  loaded = kvGet<unknown>(SETTINGS_KEY)
-    .then((stored) => {
-      if (isAppSettings(stored)) settings = stored;
-    })
-    .catch(() => {
-      // Keep the default settings.
-    })
-    .finally(() => {
-      notify();
-    });
-}
-
-/**
- * Resolves once the initial background read from IndexedDB has finished —
- * test-only, mirrors storage.ts's/app-update.ts's own `whenLoaded()`.
- */
-export function whenLoaded(): Promise<void> {
-  ensureLoaded();
-  return loaded ?? Promise.resolve();
-}
-
-export function subscribeToSettings(listener: () => void): () => void {
-  listeners.add(listener);
-  return () => {
-    listeners.delete(listener);
-  };
-}
-
-export function getSettingsSnapshot(): AppSettings {
-  ensureLoaded();
-  return settings;
-}
-
-export function getServerSettingsSnapshot(): AppSettings {
-  return defaultSettings;
-}
-
-function write(next: AppSettings): void {
-  settings = next;
-  notify();
-  void kvSet(SETTINGS_KEY, next);
-}
+/** Test-only: resolves once the initial background read has finished. */
+export const whenLoaded = settingsStore.whenLoaded;
+export const subscribeToSettings = settingsStore.subscribe;
+export const getSettingsSnapshot = settingsStore.getSnapshot;
+export const getServerSettingsSnapshot = settingsStore.getServerSnapshot;
 
 /** Chrome stops re-offering the install prompt once it considers the app
  * installed, even from a plain browser tab that never sees `standalone`
  * become true again — this is the only record of that fact surviving here. */
 export function markInstalled(): void {
   if (getSettingsSnapshot().installed) return;
-  write({ ...getSettingsSnapshot(), installed: true });
+  settingsStore.set({ installed: true });
 }
