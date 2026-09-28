@@ -54,6 +54,27 @@ describe("buildWeightSeries", () => {
     expect(series.map((p) => p.weight)).toEqual([1, 2]);
   });
 
+  it("treats a missing importOrder as 0 when sorting undated entries", () => {
+    const series = buildWeightSeries([
+      log({ id: "ordered", weight: 2, importOrder: 1 }),
+      log({ id: "unordered", weight: 1, importOrder: null }),
+    ]);
+    expect(series.map((p) => p.weight)).toEqual([1, 2]);
+  });
+
+  it("puts an undated entry first whichever side of the comparison it's on", () => {
+    const undatedFirst = buildWeightSeries([
+      log({ id: "u", weight: 1 }),
+      log({ id: "d", weight: 2, date: "2026-01-01" }),
+    ]);
+    const datedFirst = buildWeightSeries([
+      log({ id: "d", weight: 2, date: "2026-01-01" }),
+      log({ id: "u", weight: 1 }),
+    ]);
+    expect(undatedFirst.map((p) => p.weight)).toEqual([1, 2]);
+    expect(datedFirst.map((p) => p.weight)).toEqual([1, 2]);
+  });
+
   it("sorts two dated entries by date", () => {
     const series = buildWeightSeries([
       log({ id: "later", weight: 2, date: "2026-02-01" }),
