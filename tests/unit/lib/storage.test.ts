@@ -44,6 +44,22 @@ describe("categories", () => {
       { id: "e1", name: "Squat", categoryId: null, isUnilateral: false },
     ]);
   });
+
+  it("leaves exercises in other categories untouched", async () => {
+    const storage = await freshStorage();
+    storage.saveCategory({ id: "1", name: "Legs" });
+    storage.saveCategory({ id: "2", name: "Arms" });
+    storage.saveExercise({
+      id: "e2",
+      name: "Curl",
+      categoryId: "2",
+      isUnilateral: false,
+    });
+    storage.deleteCategory("1");
+    expect(storage.getDataSnapshot().exercises).toEqual([
+      { id: "e2", name: "Curl", categoryId: "2", isUnilateral: false },
+    ]);
+  });
 });
 
 describe("exercises", () => {
@@ -162,6 +178,30 @@ describe("clients", () => {
     storage.saveClient(client("2"));
 
     storage.reorderClients(["2"]);
+
+    expect(storage.getDataSnapshot().clients.map((c) => c.id)).toEqual([
+      "2",
+      "1",
+    ]);
+  });
+
+  it("ignores ids that don't match any client", async () => {
+    const storage = await freshStorage();
+    const client = (id: string) => ({
+      id,
+      firstName: id,
+      lastName: null,
+      goal: null,
+      notes: null,
+      createdAt: "2026-01-01",
+      sessions: [],
+      weightLogs: [],
+      periods: [],
+    });
+    storage.saveClient(client("1"));
+    storage.saveClient(client("2"));
+
+    storage.reorderClients(["missing", "2", "1"]);
 
     expect(storage.getDataSnapshot().clients.map((c) => c.id)).toEqual([
       "2",

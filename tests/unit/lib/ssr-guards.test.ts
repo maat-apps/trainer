@@ -14,4 +14,9 @@ describe("storage.ts SSR guard", () => {
       clients: [],
     });
   });
+
+  it("resolves whenLoaded without starting a load", async () => {
+    const { whenLoaded } = await import("@/lib/storage");
+    await expect(whenLoaded()).resolves.toBeUndefined();
+  });
 });

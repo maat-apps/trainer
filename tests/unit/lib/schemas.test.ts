@@ -104,6 +104,29 @@ describe("parseClients", () => {
     ]);
   });
 
+  it("treats a session's non-array exercises as none", () => {
+    const [client] = parseClients([
+      {
+        id: "1",
+        firstName: "Jan",
+        lastName: null,
+        goal: null,
+        notes: null,
+        createdAt: "2026-01-01",
+        sessions: [
+          {
+            id: "s1",
+            date: null,
+            importOrder: 0,
+            notes: null,
+            exercises: "not an array",
+          },
+        ],
+      },
+    ]);
+    expect(client?.sessions[0]?.exercises).toEqual([]);
+  });
+
   it("defaults missing nested collections to empty arrays", () => {
     const [client] = parseClients([
       {
