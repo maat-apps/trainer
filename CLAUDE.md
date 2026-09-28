@@ -70,7 +70,10 @@ What follows here is what's specific to **trainer**.
   (`/install`) and `src/sw.ts` (`/sw` — bump its `cacheName` when the
   shell changes). They're thin wrappers that keep their own exports, so
   tests import them, not core; a test needing a failing read/write spies
-  on `keyValueStore`'s `get`/`set`.
+  on `keyValueStore`'s `get`/`set`. Backups (`src/lib/backup.ts`) and the
+  chart PNG export (`chart-export.ts`) use `/backup` for the envelope,
+  file and share/download; `schemas.ts`' lenient per-entry parsing uses
+  `/validation`. The data schemas and Polish messages stay here.
 - **Navigation.** App-wide bottom nav (Klienci / Ćwiczenia / Ustawienia),
   `src/components/bottom-nav.tsx`'s `AppLayout` — fixed to the viewport
   bottom, `flex justify-around` across three `NavLink`s (icon + label),
