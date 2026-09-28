@@ -4,7 +4,6 @@ import { DatePickerInput } from "@maat-apps/ui/date-picker";
 import { type FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/hooks/use-store";
 import {
   addSessionExercise,
@@ -18,6 +17,7 @@ import { saveClient, saveExercise } from "@/lib/storage";
 import type { Session, SessionExercise } from "@/types";
 import { ExerciseSetsCard } from "@/views/sessions/exercise-sets-card";
 import { SessionExercisesStep } from "@/views/sessions/session-exercises-step";
+import { Textarea } from "@maat-apps/ui/textarea";
 
 const STEP_TITLES = ["Data", "Ćwiczenia", "Serie i notatki"] as const;
 const LAST_STEP = STEP_TITLES.length;
