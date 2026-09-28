@@ -1,3 +1,4 @@
+import { isRecord, parseEach } from "@maat-apps/core/validation";
 import * as v from "valibot";
 
 // --- Schemas -----------------------------------------------------------------
@@ -107,21 +108,8 @@ export type AppData = v.InferOutput<typeof AppDataSchema>;
 // well-shaped data. Each array entry — client, session, set, and so on — is
 // validated on its own, so one bad one doesn't take the rest of an otherwise-
 // valid stored blob down with it: v.array() fails the whole container on a
-// single bad element, which is more than this posture wants.
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function parseEach<T>(
-  schema: v.GenericSchema<unknown, T>,
-  items: unknown[],
-): T[] {
-  return items
-    .map((item) => v.safeParse(schema, item))
-    .filter((result) => result.success)
-    .map((result) => result.output);
-}
+// single bad element, which is more than this posture wants. The per-entry
+// helpers (isRecord, parseEach) are @maat-apps/core/validation.
 
 export function parseCategories(value: unknown): Category[] {
   if (!Array.isArray(value)) return [];
