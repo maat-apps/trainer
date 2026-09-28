@@ -85,7 +85,9 @@ What follows here is what's specific to **trainer**.
 - Don't manually re-run lint/format/typecheck/build/test to double-check a
   change before committing — CI runs the full `npm run validate` gate on
   every PR; see `maat-core/VERIFICATION.md` for why running it twice is
-  pure waste, not extra safety.
+  pure waste, not extra safety. `.github/workflows/` only holds small
+  callers of maat-core's reusable workflows (`app-*.yml`, maat-core
+  STRUCTURE.md's CI/CD) — change a pipeline there, not here.
 - Check the current branch before editing or committing anything — never
   edit or commit directly on `main`.
 - Name branches `<type>/<short-descriptive-slug>` — see
