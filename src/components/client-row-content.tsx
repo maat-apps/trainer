@@ -11,7 +11,7 @@ function formatLastSession(client: Client): string {
 
 /**
  * The name + last-session subtitle + chevron every client row (the plain
- * list before drag support, the draggable one in sortable-client-row.tsx)
+ * list before drag support, now SortableListRow in client-list-view.tsx)
  * shows — the caller owns the outer clickable/draggable wrapper. Mirrors
  * routines' routine-row-content.tsx, minus the progress ring (clients have
  * no step-completion concept).

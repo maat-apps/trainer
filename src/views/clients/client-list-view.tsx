@@ -1,19 +1,8 @@
-import { closestCenter, DndContext, type DragEndEvent } from "@dnd-kit/core";
-import {
-  restrictToParentElement,
-  restrictToVerticalAxis,
-} from "@dnd-kit/modifiers";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { Gear, Plus } from "@phosphor-icons/react";
 import { startTransition, useState } from "react";
 import { useNavigate } from "react-router";
 
-import { SortableClientRow } from "@/components/sortable-client-row";
-import { useDragSensors } from "@/hooks/use-drag-sensors";
+import { ClientRowContent } from "@/components/client-row-content";
 import { useAppData } from "@/hooks/use-store";
 import { reorderClients } from "@/lib/storage";
 import { SettingsPanel } from "@/views/settings/settings-panel";
@@ -27,20 +16,12 @@ import {
 import { EmptyState } from "@maat-apps/ui/empty-state";
 import { FabButton } from "@maat-apps/ui/fab-button";
 import { PageHeader } from "@maat-apps/ui/page-header";
+import { SortableList, SortableListRow } from "@maat-apps/ui/sortable-list";
 
 export function ClientListView() {
   const navigate = useNavigate();
   const { clients } = useAppData();
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const sensors = useDragSensors();
-
-  function handleDragEnd({ active, over }: DragEndEvent) {
-    if (!over || active.id === over.id) return;
-    const oldIndex = clients.findIndex((client) => client.id === active.id);
-    const newIndex = clients.findIndex((client) => client.id === over.id);
-    if (oldIndex === -1 || newIndex === -1) return;
-    reorderClients(arrayMove(clients, oldIndex, newIndex).map((c) => c.id));
-  }
 
   return (
     <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
@@ -69,34 +50,26 @@ export function ClientListView() {
           }}
         />
       ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={clients.map((client) => client.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <section
-              className="grid grid-cols-[minmax(0,1fr)] gap-2.5"
-              aria-label="Klienci"
+        <SortableList
+          items={clients}
+          onReorder={reorderClients}
+          className="gap-2.5"
+          aria-label="Klienci"
+          renderItem={(client) => (
+            <SortableListRow
+              key={client.id}
+              id={client.id}
+              dragLabel={`Przenieś ${client.firstName}`}
+              onOpen={(clientId) =>
+                startTransition(() =>
+                  navigate(`/clients/${encodeURIComponent(clientId)}`),
+                )
+              }
             >
-              {clients.map((client) => (
-                <SortableClientRow
-                  key={client.id}
-                  client={client}
-                  onOpen={(clientId) =>
-                    startTransition(() =>
-                      navigate(`/clients/${encodeURIComponent(clientId)}`),
-                    )
-                  }
-                />
-              ))}
-            </section>
-          </SortableContext>
-        </DndContext>
+              <ClientRowContent client={client} />
+            </SortableListRow>
+          )}
+        />
       )}
       <FabButton
         className="fixed right-[max(20px,calc((100vw-480px)/2+20px))] bottom-[calc(84px+env(safe-area-inset-bottom))] z-20"

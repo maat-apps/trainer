@@ -4,9 +4,9 @@ import { Input } from "@maat-apps/ui/input";
 import { type FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import { Textarea } from "@/components/ui/textarea";
 import { useAppData } from "@/hooks/use-store";
 import { saveClient } from "@/lib/storage";
+import { Textarea } from "@maat-apps/ui/textarea";
 
 function nullableTrim(value: string): string | null {
   const trimmed = value.trim();
