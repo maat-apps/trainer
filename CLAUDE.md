@@ -55,10 +55,11 @@ What follows here is what's specific to **trainer**.
   a portal, not a native `<select>` — e2e specs interact with it as
   `getByRole("combobox", { name })` + `getByRole("option", { name })`,
   not `.selectOption()`. `src/app/globals.css`'s `@source` covers the
-  package's whole compiled `dist/`, or its classes get purged. The
-  design tokens in that same file (colors, radii) are required for these
-  components' classes (`bg-primary`, `border-input`, etc.) to resolve to
-  anything — don't remove them even if they look unused at a glance.
+  package's whole compiled `dist/`, or its classes get purged. The theme
+  (true black + white on Outfit: tokens, font, base styles) comes from
+  `@import "@maat-apps/ui/theme.css"` in the same file — shared by every
+  app, so don't redefine tokens here; only trainer's own additions (the
+  larger inputs) live in `globals.css`.
   `src/lib/utils.ts` re-exports `cn` from the `cn` npm package, matching
   the alias `components.json` declares.
 - **Platform plumbing** comes from
