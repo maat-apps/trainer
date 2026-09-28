@@ -92,6 +92,9 @@ What follows here is what's specific to **trainer**.
   session-scoped name; cut a fresh branch per PR/task rather than reusing
   one across unrelated changes.
 - Commit once a task's changes are complete, then use `/open-pr` to push
-  and open the PR.
+  and open the PR, and merge it (squash) once CI is green — see maat-core
+  `STRUCTURE.md`'s Claude Code workflow. `.claude/commands/` and
+  `.claude/skills/` are copies of maat-core's `configs/claude` standard:
+  change them there first, then sync.
 
 <!-- END AUTO-GENERATED: setup-claude-workflow -->
