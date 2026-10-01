@@ -1,9 +1,24 @@
+import {
+  decryptJson,
+  encryptJson,
+  isEncryptedBlob,
+} from "@maat-apps/core/crypto";
+
+import {
+  getSettingsSnapshot,
+  whenLoaded as whenSettingsLoaded,
+} from "@/lib/app-settings";
+import { encryptionKey } from "@/lib/encryption-key";
 import { kvGet, kvSet } from "@/lib/idb-store";
 import { parseAppData } from "@/lib/schemas";
 import { DATA_KEY } from "@/lib/storage-keys";
 import type { AppData, Category, Client, Exercise } from "@/types";
 
-const emptyData: AppData = { categories: [], exercises: [], clients: [] };
+export const EMPTY_DATA: AppData = {
+  categories: [],
+  exercises: [],
+  clients: [],
+};
 
 // --- Central store -------------------------------------------------------------
 // An in-memory copy of `AppData` is the real source of truth once loaded;
@@ -15,22 +30,33 @@ const emptyData: AppData = { categories: [], exercises: [], clients: [] };
 // one screen should update a list rendered on another) via the tiny pub/sub
 // below, which `useSyncExternalStore`-based hooks in src/hooks/ subscribe to.
 const listeners = new Set<() => void>();
-const serverData: AppData = emptyData;
+const serverData: AppData = EMPTY_DATA;
 
 let snapshot: AppData = serverData;
 let snapshotStale = true;
 
-let dbData: AppData = emptyData;
+let dbData: AppData = EMPTY_DATA;
 let loaded: Promise<void> | null = null;
 
 async function loadData(): Promise<void> {
+  await whenSettingsLoaded();
+  if (getSettingsSnapshot().lock?.encryptionSupported) {
+    // The whole app is gated behind the lock screen until unlock succeeds,
+    // so the data is never needed — and never readable — before the key is.
+    await encryptionKey.whenSet();
+  }
   try {
     const stored = await kvGet<unknown>(DATA_KEY);
     if (stored) {
-      dbData = parseAppData(stored);
+      const key = encryptionKey.get();
+      dbData = parseAppData(
+        key && isEncryptedBlob(stored)
+          ? await decryptJson<unknown>(key, stored)
+          : stored,
+      );
     }
   } catch {
-    // Keep emptyData — same fallback as a corrupt/missing stored blob.
+    // Keep EMPTY_DATA — same fallback as a corrupt/missing stored blob.
   } finally {
     emitChange();
   }
@@ -80,7 +106,7 @@ export function getServerDataSnapshot(): AppData {
 
 function readData(): AppData {
   if (typeof window === "undefined") {
-    return emptyData;
+    return EMPTY_DATA;
   }
   ensureLoaded();
   return dbData;
@@ -94,13 +120,14 @@ function writeData(data: AppData): void {
 
 async function persist(data: AppData): Promise<void> {
   try {
-    await kvSet(DATA_KEY, data);
+    const key = encryptionKey.get();
+    await kvSet(DATA_KEY, key ? await encryptJson(key, data) : data);
   } catch {
     // Best-effort — the in-memory copy (and this tab) already reflects it.
   }
 }
 
-/** Replaces everything — used by backup import (trainer#9) and a future "reset all data". */
+/** Replaces everything — used by backup import (trainer#9) and the app lock's rewrite/erase. */
 export function replaceAllData(data: AppData): void {
   writeData(data);
 }

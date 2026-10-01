@@ -9,11 +9,13 @@ import {
   parseBackupValue,
   type Backup,
 } from "@/lib/backup";
+import { encryptionKey } from "@/lib/encryption-key";
 import { keyValueStore } from "@/lib/idb-store";
 import { SNAPSHOT_KEY } from "@/lib/storage-keys";
 
 // Settings' "Zaktualizuj" and its pre-update snapshot (@maat-apps/core/update),
-// with trainer's own backup format as the snapshot.
+// with trainer's own backup format as the snapshot, encrypted with the app
+// lock's key like the rest of trainer's data.
 
 const snapshot = createUpdateSnapshot<Backup>({
   storage: keyValueStore,
@@ -23,6 +25,7 @@ const snapshot = createUpdateSnapshot<Backup>({
     parse: parseBackupValue,
     apply: applyBackup,
   },
+  encryption: { getKey: encryptionKey.get },
 });
 
 /** Test-only: resolves once the initial existence check has finished. */

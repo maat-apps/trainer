@@ -260,3 +260,84 @@ describe("persistence", () => {
     });
   });
 });
+
+describe("encryption", () => {
+  const encryptedEnrolment = {
+    credentialId: "c1",
+    userId: "u1",
+    createdAt: "now",
+    encryptionSupported: true,
+    prfSalt: "c2FsdA",
+  };
+
+  async function testKey() {
+    const { deriveKey, randomBytes } = await import("@maat-apps/core/crypto");
+    return deriveKey(randomBytes(32), randomBytes(16), "test-data-v1");
+  }
+
+  async function seedEncrypted(key: CryptoKey) {
+    const { encryptJson } = await import("@maat-apps/core/crypto");
+    const { kvSet } = await import("@/lib/idb-store");
+    const { DATA_KEY } = await import("@/lib/storage-keys");
+    await kvSet(
+      DATA_KEY,
+      await encryptJson(key, {
+        categories: [{ id: "1", name: "Secret" }],
+        exercises: [],
+        clients: [],
+      }),
+    );
+  }
+
+  it("persists writes encrypted while a key is set", async () => {
+    const storage = await freshStorage();
+    const { encryptionKey } = await import("@/lib/encryption-key");
+    const { isEncryptedBlob } = await import("@maat-apps/core/crypto");
+    const { kvGet } = await import("@/lib/idb-store");
+    const { DATA_KEY } = await import("@/lib/storage-keys");
+    encryptionKey.set(await testKey());
+
+    storage.saveCategory({ id: "1", name: "Legs" });
+
+    await vi.waitFor(async () => {
+      expect(isEncryptedBlob(await kvGet(DATA_KEY))).toBe(true);
+    });
+  });
+
+  it("holds the load until the key is set when the lock encrypts", async () => {
+    vi.resetModules();
+    const settings = await import("@/lib/app-settings");
+    await settings.whenLoaded();
+    settings.setLockEnrolment(encryptedEnrolment);
+    const key = await testKey();
+    await seedEncrypted(key);
+
+    const storage = await import("@/lib/storage");
+    void storage.whenLoaded();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(storage.getDataSnapshot().categories).toEqual([]);
+
+    const { encryptionKey } = await import("@/lib/encryption-key");
+    encryptionKey.set(key);
+    await storage.whenLoaded();
+    expect(storage.getDataSnapshot().categories).toEqual([
+      { id: "1", name: "Secret" },
+    ]);
+  });
+
+  it("decrypts when the key was set before the first load", async () => {
+    vi.resetModules();
+    const settings = await import("@/lib/app-settings");
+    await settings.whenLoaded();
+    settings.setLockEnrolment(encryptedEnrolment);
+    const key = await testKey();
+    await seedEncrypted(key);
+    const { encryptionKey } = await import("@/lib/encryption-key");
+    encryptionKey.set(key);
+
+    const storage = await import("@/lib/storage");
+    await storage.whenLoaded();
+
+    expect(storage.getDataSnapshot().categories).toHaveLength(1);
+  });
+});

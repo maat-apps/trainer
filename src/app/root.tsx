@@ -1,5 +1,7 @@
 import { MobileGate } from "@maat-apps/ui/mobile-gate";
 import { useEffect } from "react";
+
+import { AppLockGate } from "../components/app-lock-gate";
 import { useTranslation } from "../i18n/use-translation";
 import { AppRouter } from "./router";
 
@@ -30,7 +32,9 @@ export function Root() {
 
   return (
     <MobileGate message={t("desktopNotSupported")}>
-      <AppRouter />
+      <AppLockGate>
+        <AppRouter />
+      </AppLockGate>
     </MobileGate>
   );
 }

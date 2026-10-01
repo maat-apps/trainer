@@ -252,3 +252,22 @@ describe("updateApp", () => {
     expect(reload).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("encryption", () => {
+  it("saves the snapshot encrypted while a key is set", async () => {
+    const { storage, appUpdate, idbStore } = await freshAppUpdate();
+    const { encryptionKey } = await import("@/lib/encryption-key");
+    const { deriveKey, isEncryptedBlob, randomBytes } =
+      await import("@maat-apps/core/crypto");
+    encryptionKey.set(
+      await deriveKey(randomBytes(32), randomBytes(16), "test-data-v1"),
+    );
+    storage.saveClient(testClient);
+
+    await appUpdate.saveUpdateSnapshot();
+
+    expect(isEncryptedBlob(await idbStore.kvGet(SNAPSHOT_KEY))).toBe(true);
+    const snapshot = await appUpdate.readUpdateSnapshot();
+    expect(snapshot?.data.clients.map((client) => client.id)).toEqual(["1"]);
+  });
+});

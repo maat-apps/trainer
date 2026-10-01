@@ -74,6 +74,17 @@ What follows here is what's specific to **trainer**.
   chart PNG export (`chart-export.ts`) use `/backup` for the envelope,
   file and share/download; `schemas.ts`' lenient per-entry parsing uses
   `/validation`. The data schemas and Polish messages stay here.
+- **App lock + encryption.** Every maat-apps app has it: logic from
+  `@maat-apps/core/lock`, the lock screen from `@maat-apps/ui/app-lock-gate`
+  (inside `MobileGate`, `src/app/root.tsx`). Trainer's wiring:
+  `src/lib/app-lock.ts` (`appLock`; enrolment in `app-settings.ts`,
+  rewrite/erase over `storage.ts` + the update snapshot),
+  `src/lib/encryption-key.ts` (the key holder `storage.ts` and
+  `app-update.ts` encrypt with), `src/components/app-lock-gate.tsx`
+  (Polish labels) and Settings' `settings-security-section.tsx`. With WebAuthn
+  PRF `trainer-data` is encrypted; without it the lock is a UI gate only and
+  Settings says so. **Never change `HKDF_INFO` (`"trainer-data-v1"`)** —
+  existing encrypted data would become unreadable.
 - **Navigation.** App-wide bottom nav (Klienci / Ćwiczenia / Ustawienia),
   `src/components/bottom-nav.tsx`'s `AppLayout` — fixed to the viewport
   bottom, `flex justify-around` across three `NavLink`s (icon + label),
