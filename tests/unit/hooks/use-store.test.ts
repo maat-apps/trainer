@@ -28,3 +28,21 @@ describe("useAppData", () => {
     expect(result.current.categories).toEqual([{ id: "1", name: "Legs" }]);
   });
 });
+
+describe("useAppSettings / useSettingsReady", () => {
+  it("reflects settings once loaded", async () => {
+    vi.resetModules();
+    const { useAppSettings, useSettingsReady } =
+      await import("@/hooks/use-store");
+    const settings = await import("@/lib/app-settings");
+    const { result } = renderHook(() => ({
+      settings: useAppSettings(),
+      ready: useSettingsReady(),
+    }));
+
+    await act(() => settings.whenLoaded());
+
+    expect(result.current.ready).toBe(true);
+    expect(result.current.settings.lock).toBeNull();
+  });
+});
