@@ -1,6 +1,6 @@
 import { createAppLock } from "@maat-apps/core/lock";
 
-import { getSettingsSnapshot, setLockEnrolment } from "@/lib/app-settings";
+import { setLockEnrolment } from "@/lib/app-settings";
 import { discardUpdateSnapshot } from "@/lib/app-update";
 import { encryptionKey } from "@/lib/encryption-key";
 import { EMPTY_DATA, getDataSnapshot, replaceAllData } from "@/lib/storage";
@@ -15,10 +15,7 @@ export const appLock = createAppLock({
   name: "Trainer",
   keyInfo: HKDF_INFO,
   keyHolder: encryptionKey,
-  enrolment: {
-    get: () => getSettingsSnapshot().lock,
-    set: setLockEnrolment,
-  },
+  saveEnrolment: setLockEnrolment,
   data: {
     rewrite: () => replaceAllData(getDataSnapshot()),
     erase: async () => {
