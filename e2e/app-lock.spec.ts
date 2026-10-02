@@ -1,9 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { goHome } from "./utils";
+import { goHome, waitForStoredLock } from "./utils";
 
 const LOCKED_TITLE = "Trainer jest zablokowany";
 
+// Wiring only: the app's enrolment persists and its gate renders. The lock
+// screen's own behavior (escape hatch, erase warning) is tested in
+// @maat-apps/ui, the lock logic in @maat-apps/core.
 test.describe("app lock", () => {
   test("enrolling turns the lock on and unlocking with the same authenticator works", async ({
     page,
@@ -21,6 +24,7 @@ test.describe("app lock", () => {
 
     // Enrolling counts as unlocked, but that's per-session memory — a
     // reload shows the lock screen.
+    await waitForStoredLock(page);
     await page.reload();
     await expect(
       page.getByRole("heading", { name: LOCKED_TITLE }),
@@ -30,46 +34,5 @@ test.describe("app lock", () => {
     await expect(page.getByRole("heading", { name: LOCKED_TITLE })).toHaveCount(
       0,
     );
-  });
-
-  test("the escape hatch turns the lock off when no authenticator is available", async ({
-    page,
-  }) => {
-    // Force "no platform authenticator" regardless of the host machine, and
-    // seed an enrolled gate-only lock. Store/key names are duplicated by
-    // hand: an init script can't import from src/.
-    await page.addInitScript(() => {
-      window.PublicKeyCredential = window.PublicKeyCredential ?? ({} as never);
-      window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable =
-        () => Promise.resolve(false);
-      const request = indexedDB.open("trainer", 1);
-      request.onupgradeneeded = () => {
-        if (!request.result.objectStoreNames.contains("kv")) {
-          request.result.createObjectStore("kv");
-        }
-      };
-      request.onsuccess = () => {
-        const transaction = request.result.transaction("kv", "readwrite");
-        transaction.objectStore("kv").put(
-          {
-            installed: false,
-            lock: {
-              credentialId: "fake",
-              userId: "fake-user",
-              createdAt: new Date().toISOString(),
-              encryptionSupported: false,
-            },
-          },
-          "trainer-settings",
-        );
-      };
-    });
-    await goHome(page);
-
-    await expect(
-      page.getByRole("heading", { name: LOCKED_TITLE }),
-    ).toBeVisible();
-    await page.getByRole("button", { name: "Wyłącz blokadę" }).click();
-    await expect(page.getByRole("heading", { name: "Klienci" })).toBeVisible();
   });
 });
