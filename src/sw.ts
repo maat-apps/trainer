@@ -14,7 +14,7 @@ declare const self: ServiceWorkerGlobalScope & {
 
 registerAppWorker(self, {
   // Bump whenever the app shell changes — activation deletes every other cache.
-  cacheName: "trainer-v1",
+  cacheName: "trainer-v2",
   manifest: self.__WB_MANIFEST,
   baseUrl: import.meta.env.BASE_URL,
 });
