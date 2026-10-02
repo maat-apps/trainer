@@ -1,6 +1,7 @@
 import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
+import { useSmartBack } from "@maat-apps/ui/smart-back";
 import { PencilSimple } from "@phosphor-icons/react";
 import { type FormEvent, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
@@ -11,6 +12,7 @@ import { deleteClient, saveClient } from "@/lib/storage";
 export function ClientProfileView() {
   const { clientId } = useParams();
   const navigate = useNavigate();
+  const back = useSmartBack("/");
   const { clients } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const [weightInput, setWeightInput] = useState("");
@@ -18,11 +20,7 @@ export function ClientProfileView() {
   if (!client) {
     return (
       <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
-        <AppBar
-          title="Klient"
-          backLabel="Wstecz"
-          onBack={() => navigate("/")}
-        />
+        <AppBar title="Klient" backLabel="Wstecz" onBack={back} />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
       </div>
     );
@@ -30,7 +28,7 @@ export function ClientProfileView() {
 
   const handleDelete = () => {
     deleteClient(client.id);
-    navigate("/");
+    back();
   };
 
   const handleLogWeight = (event: FormEvent) => {
@@ -57,7 +55,7 @@ export function ClientProfileView() {
       <AppBar
         title={`${client.firstName}${client.lastName ? ` ${client.lastName}` : ""}`}
         backLabel="Wstecz"
-        onBack={() => navigate("/")}
+        onBack={back}
         action={
           <Button
             variant="ghost"

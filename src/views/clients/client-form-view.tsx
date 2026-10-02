@@ -1,6 +1,7 @@
 import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { Input } from "@maat-apps/ui/input";
+import { useSmartBack } from "@maat-apps/ui/smart-back";
 import { type FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -18,7 +19,7 @@ export function ClientFormView() {
   const navigate = useNavigate();
   const { clients } = useAppData();
   const existing = clients.find((client) => client.id === clientId);
-  const backTo = existing ? `/clients/${existing.id}` : "/";
+  const back = useSmartBack(existing ? `/clients/${existing.id}` : "/");
 
   const [firstName, setFirstName] = useState(existing?.firstName ?? "");
   const [lastName, setLastName] = useState(existing?.lastName ?? "");
@@ -39,7 +40,12 @@ export function ClientFormView() {
       weightLogs: existing?.weightLogs ?? [],
       periods: existing?.periods ?? [],
     });
-    navigate(`/clients/${id}`);
+    if (existing) {
+      back();
+    } else {
+      // Creating is a forward transition: the new profile replaces the form.
+      void navigate(`/clients/${id}`, { replace: true });
+    }
   }
 
   return (
@@ -47,7 +53,7 @@ export function ClientFormView() {
       <AppBar
         title={existing ? "Edytuj klienta" : "Nowy klient"}
         backLabel="Wstecz"
-        onBack={() => navigate(backTo)}
+        onBack={back}
       />
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1">

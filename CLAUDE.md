@@ -92,7 +92,11 @@ What follows here is what's specific to **trainer**.
   (wired in `src/app/router.tsx`), wrapped in a `pb-16` div so the fixed
   bar never covers the last bit of scrolled content — add the same bottom
   padding to any new full-screen view that doesn't go through that
-  wrapper.
+  wrapper. "Wstecz" is `useSmartBack(parent)` from
+  `@maat-apps/ui/smart-back`, never `navigate(parent)`; saving an edit or
+  deleting calls the same `back()`, creating replaces the form's history
+  entry (`navigate(newDetail, { replace: true })`) — maat-core
+  STRUCTURE.md's Routing pattern; `e2e/navigation.spec.ts` covers it.
 
 ## Workflow Rules
 

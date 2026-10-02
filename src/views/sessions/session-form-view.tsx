@@ -1,8 +1,9 @@
 import { AppBar } from "@maat-apps/ui/app-bar";
 import { Button } from "@maat-apps/ui/button";
 import { DatePickerInput } from "@maat-apps/ui/date-picker";
+import { useSmartBack } from "@maat-apps/ui/smart-back";
 import { type FormEvent, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
 import {
@@ -24,11 +25,10 @@ const LAST_STEP = STEP_TITLES.length;
 
 export function SessionFormView() {
   const { clientId, sessionId } = useParams();
-  const navigate = useNavigate();
   const { clients, exercises } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const existing = client?.sessions.find((item) => item.id === sessionId);
-  const backTo = clientId ? `/clients/${clientId}` : "/";
+  const back = useSmartBack(clientId ? `/clients/${clientId}` : "/");
 
   const [step, setStep] = useState(1);
   const [date, setDate] = useState(existing?.date ?? "");
@@ -45,18 +45,14 @@ export function SessionFormView() {
     if (step > 1) {
       setStep((current) => current - 1);
     } else {
-      navigate(backTo);
+      back();
     }
   }
 
   if (!client) {
     return (
       <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
-        <AppBar
-          title={title}
-          backLabel="Wstecz"
-          onBack={() => navigate(backTo)}
-        />
+        <AppBar title={title} backLabel="Wstecz" onBack={back} />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
       </div>
     );
@@ -124,7 +120,7 @@ export function SessionFormView() {
       ? client.sessions.map((item) => (item.id === session.id ? session : item))
       : [...client.sessions, session];
     saveClient({ ...client, sessions });
-    navigate(`/clients/${client.id}`);
+    back();
   };
 
   return (

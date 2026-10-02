@@ -8,8 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@maat-apps/ui/select";
+import { useSmartBack } from "@maat-apps/ui/smart-back";
 import { type FormEvent, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
 import { EXERCISE_ICONS, exerciseIcon } from "@/lib/exercise-icons";
@@ -19,7 +20,7 @@ const NEW_CATEGORY_VALUE = "__new__";
 
 export function ExerciseFormView() {
   const { exerciseId } = useParams();
-  const navigate = useNavigate();
+  const back = useSmartBack("/exercises");
   const { categories, exercises } = useAppData();
   const existing = exercises.find((exercise) => exercise.id === exerciseId);
 
@@ -61,13 +62,13 @@ export function ExerciseFormView() {
       isUnilateral,
       iconName,
     });
-    navigate("/exercises");
+    back();
   }
 
   function handleDelete() {
     if (!existing) return;
     deleteExercise(existing.id);
-    navigate("/exercises");
+    back();
   }
 
   return (
@@ -75,7 +76,7 @@ export function ExerciseFormView() {
       <AppBar
         title={existing ? "Edytuj ćwiczenie" : "Nowe ćwiczenie"}
         backLabel="Wstecz"
-        onBack={() => navigate("/exercises")}
+        onBack={back}
       />
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1">

@@ -19,8 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@maat-apps/ui/select";
+import { useSmartBack } from "@maat-apps/ui/smart-back";
 import { useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import { useAppData } from "@/hooks/use-store";
@@ -42,11 +43,10 @@ function formatLabel(x: unknown): string {
 
 export function ClientProgressView() {
   const { clientId } = useParams();
-  const navigate = useNavigate();
   const { clients, exercises } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const chartRef = useRef<HTMLDivElement>(null);
-  const backTo = clientId ? `/clients/${clientId}` : "/";
+  const back = useSmartBack(clientId ? `/clients/${clientId}` : "/");
 
   const loggedIds = client ? loggedExerciseIds(client.sessions) : [];
   const availableExercises = exercises.filter((exercise) =>
@@ -59,11 +59,7 @@ export function ClientProgressView() {
   if (!client) {
     return (
       <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
-        <AppBar
-          title="Postępy"
-          backLabel="Wstecz"
-          onBack={() => navigate(backTo)}
-        />
+        <AppBar title="Postępy" backLabel="Wstecz" onBack={back} />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
       </div>
     );
@@ -107,11 +103,7 @@ export function ClientProgressView() {
 
   return (
     <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
-      <AppBar
-        title="Postępy"
-        backLabel="Wstecz"
-        onBack={() => navigate(backTo)}
-      />
+      <AppBar title="Postępy" backLabel="Wstecz" onBack={back} />
 
       {availableExercises.length === 0 ? (
         <p className="text-muted-foreground text-sm">
