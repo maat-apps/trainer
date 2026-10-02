@@ -10,8 +10,9 @@ import {
   DateRangePickerInput,
   type DateRangeValue,
 } from "@maat-apps/ui/date-picker";
+import { useSmartBack } from "@maat-apps/ui/smart-back";
 import { useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import {
   CartesianGrid,
   Line,
@@ -44,11 +45,10 @@ function formatLabel(x: unknown): string {
 
 export function ClientWeightView() {
   const { clientId } = useParams();
-  const navigate = useNavigate();
   const { clients } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const chartRef = useRef<HTMLDivElement>(null);
-  const backTo = clientId ? `/clients/${clientId}` : "/";
+  const back = useSmartBack(clientId ? `/clients/${clientId}` : "/");
 
   const [dateRange, setDateRange] = useState<DateRangeValue | undefined>();
   const [shareStatus, setShareStatus] = useState<string | null>(null);
@@ -56,11 +56,7 @@ export function ClientWeightView() {
   if (!client) {
     return (
       <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
-        <AppBar
-          title="Waga"
-          backLabel="Wstecz"
-          onBack={() => navigate(backTo)}
-        />
+        <AppBar title="Waga" backLabel="Wstecz" onBack={back} />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
       </div>
     );
@@ -91,7 +87,7 @@ export function ClientWeightView() {
 
   return (
     <div className="mx-auto min-h-dvh w-[min(100%,480px)] px-4 pt-27 pb-4">
-      <AppBar title="Waga" backLabel="Wstecz" onBack={() => navigate(backTo)} />
+      <AppBar title="Waga" backLabel="Wstecz" onBack={back} />
 
       {rawPoints.length === 0 ? (
         <p className="text-muted-foreground text-sm">

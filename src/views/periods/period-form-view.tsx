@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@maat-apps/ui/select";
+import { useSmartBack } from "@maat-apps/ui/smart-back";
 import { type FormEvent, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 
 import { useAppData } from "@/hooks/use-store";
 import { saveClient } from "@/lib/storage";
@@ -29,11 +30,10 @@ function parseISODateString(value: string): Date | undefined {
 
 export function PeriodFormView() {
   const { clientId, periodId } = useParams();
-  const navigate = useNavigate();
   const { clients } = useAppData();
   const client = clients.find((item) => item.id === clientId);
   const existing = client?.periods.find((item) => item.id === periodId);
-  const backTo = clientId ? `/clients/${clientId}` : "/";
+  const back = useSmartBack(clientId ? `/clients/${clientId}` : "/");
 
   const [type, setType] = useState<Period["type"]>(existing?.type ?? "mass");
   const [label, setLabel] = useState(existing?.label ?? "");
@@ -46,7 +46,7 @@ export function PeriodFormView() {
         <AppBar
           title={existing ? "Edytuj okres" : "Nowy okres"}
           backLabel="Wstecz"
-          onBack={() => navigate(backTo)}
+          onBack={back}
         />
         <p className="text-muted-foreground">Nie znaleziono klienta.</p>
       </div>
@@ -66,7 +66,7 @@ export function PeriodFormView() {
       ? client.periods.map((item) => (item.id === period.id ? period : item))
       : [...client.periods, period];
     saveClient({ ...client, periods });
-    navigate(`/clients/${client.id}`);
+    back();
   };
 
   const handleDelete = () => {
@@ -75,7 +75,7 @@ export function PeriodFormView() {
       ...client,
       periods: client.periods.filter((item) => item.id !== existing.id),
     });
-    navigate(`/clients/${client.id}`);
+    back();
   };
 
   return (
@@ -83,7 +83,7 @@ export function PeriodFormView() {
       <AppBar
         title={existing ? "Edytuj okres" : "Nowy okres"}
         backLabel="Wstecz"
-        onBack={() => navigate(backTo)}
+        onBack={back}
       />
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-1">
