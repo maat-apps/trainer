@@ -10,6 +10,7 @@ import {
 } from "@/lib/app-settings";
 import { encryptionKey } from "@/lib/encryption-key";
 import { kvGet, kvSet } from "@/lib/idb-store";
+import { mergeAppData } from "@/lib/merge-data";
 import { parseAppData } from "@/lib/schemas";
 import { DATA_KEY } from "@/lib/storage-keys";
 import type { AppData, Category, Client, Exercise } from "@/types";
@@ -127,7 +128,12 @@ async function persist(data: AppData): Promise<void> {
   }
 }
 
-/** Replaces everything — used by backup import (trainer#9) and the app lock's rewrite/erase. */
+/** Adds what the device lacks and leaves what it has as it is (backup import). */
+export function mergeIntoData(incoming: AppData): void {
+  writeData(mergeAppData(readData(), incoming));
+}
+
+/** Replaces everything — used by the update snapshot restore and the app lock's rewrite/erase. */
 export function replaceAllData(data: AppData): void {
   writeData(data);
 }

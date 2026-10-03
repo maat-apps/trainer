@@ -91,6 +91,30 @@ describe("applyBackup", () => {
   });
 });
 
+describe("mergeBackup", () => {
+  it("adds the backup's data to the current data", async () => {
+    const { backup, storage } = await freshBackup();
+    storage.saveCategory({ id: "old", name: "Old" });
+    backup.mergeBackup({
+      app: "trainer",
+      version: 1,
+      exportedAt: "2026-09-17T12:00:00.000Z",
+      data: {
+        categories: [
+          { id: "old", name: "Changed" },
+          { id: "new", name: "New" },
+        ],
+        exercises: [],
+        clients: [],
+      },
+    });
+    expect(storage.getDataSnapshot().categories).toEqual([
+      { id: "old", name: "Old" },
+      { id: "new", name: "New" },
+    ]);
+  });
+});
+
 describe("downloadBackup", () => {
   // jsdom doesn't implement URL.createObjectURL/revokeObjectURL at all, so
   // calling downloadBackup unstubbed throws — spy on just those two methods

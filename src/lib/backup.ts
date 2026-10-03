@@ -7,7 +7,7 @@ import {
 } from "@maat-apps/core/backup";
 
 import { parseAppData } from "@/lib/schemas";
-import { getDataSnapshot, replaceAllData } from "@/lib/storage";
+import { getDataSnapshot, mergeIntoData, replaceAllData } from "@/lib/storage";
 import type { AppData } from "@/types";
 
 // trainer's backup format on top of @maat-apps/core/backup, which handles
@@ -64,7 +64,12 @@ export function parseBackupValue(parsed: unknown): Backup {
   };
 }
 
-/** Overwrites the current data with the backup's. */
+/** Import from Settings: keeps the data on the device and adds the backup's. */
+export function mergeBackup(backup: Backup): void {
+  mergeIntoData(backup.data);
+}
+
+/** Overwrites the current data with the backup's (restoring the update snapshot). */
 export function applyBackup(backup: Backup): void {
   replaceAllData(backup.data);
 }

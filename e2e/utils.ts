@@ -38,3 +38,36 @@ export async function waitForStoredLock(page: Page) {
     )
     .toBe(true);
 }
+
+/**
+ * Resolves once a client with this first name has reached IndexedDB. Data
+ * persists in the background, so a reload right after saving can lose it.
+ */
+export async function waitForStoredClient(page: Page, firstName: string) {
+  await expect
+    .poll(() =>
+      page.evaluate(
+        (name) =>
+          new Promise<boolean>((resolve) => {
+            const request = indexedDB.open("trainer");
+            request.onerror = () => resolve(false);
+            request.onsuccess = () => {
+              const read = request.result
+                .transaction("kv")
+                .objectStore("kv")
+                .get("trainer-data");
+              read.onerror = () => resolve(false);
+              read.onsuccess = () =>
+                resolve(
+                  (
+                    (read.result as { clients?: { firstName: string }[] })
+                      ?.clients ?? []
+                  ).some((client) => client.firstName === name),
+                );
+            };
+          }),
+        firstName,
+      ),
+    )
+    .toBe(true);
+}
