@@ -61,7 +61,7 @@ export function SessionExercisesStep({
           {sessionExercises.map((se) => (
             <li
               key={se.exerciseId}
-              className="border-muted-foreground/40 flex items-center justify-between rounded border p-3"
+              className="border-muted-foreground/40 flex items-center justify-between rounded-lg border p-3"
             >
               {nameOf(se.exerciseId)}
               <Button
@@ -77,7 +77,7 @@ export function SessionExercisesStep({
         </ul>
       )}
 
-      <section className="border-muted-foreground/40 rounded border p-3">
+      <section className="border-muted-foreground/40 rounded-lg border p-3">
         <h2 className="mb-2 font-medium">Dodaj ćwiczenie</h2>
         {availableExercises.length > 0 && (
           <div className="mb-2 flex gap-2">
