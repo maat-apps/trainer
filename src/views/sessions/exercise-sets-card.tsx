@@ -51,7 +51,7 @@ export function ExerciseSetsCard({
   onAddSet: () => void;
 }) {
   return (
-    <div className="border-muted-foreground/40 rounded border p-3">
+    <div className="border-muted-foreground/40 rounded-lg border p-3">
       <h2 className="mb-2 font-medium">
         {exercise?.name ?? "Usunięte ćwiczenie"}
       </h2>
