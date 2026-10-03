@@ -1,6 +1,6 @@
 import { type ChangeEvent, useRef, useState } from "react";
 
-import { applyBackup, downloadBackup, parseBackup } from "@/lib/backup";
+import { downloadBackup, mergeBackup, parseBackup } from "@/lib/backup";
 import { Button } from "@maat-apps/ui/button";
 import {
   SettingsRow,
@@ -18,7 +18,7 @@ export function DataSection() {
     try {
       const text = await file.text();
       const backup = parseBackup(text);
-      applyBackup(backup);
+      mergeBackup(backup);
       setImportMessage("Dane zaimportowane pomyślnie.");
     } catch (error) {
       setImportMessage(
@@ -44,7 +44,7 @@ export function DataSection() {
       />
       <SettingsRow
         title="Importuj dane"
-        description="Zastąp obecne dane z pliku kopii zapasowej."
+        description="Dodaj dane z pliku kopii zapasowej do obecnych. Nic nie jest zastępowane ani usuwane."
         action={
           <Button
             variant="outline"
