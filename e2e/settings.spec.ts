@@ -1,12 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-import { goHome } from "./utils";
+import { goHome, waitForStoredClient } from "./utils";
 
 test("importing a backup adds to the current data", async ({ page }) => {
   await goHome(page);
   await page.getByRole("button", { name: "Dodaj klienta" }).first().click();
   await page.getByLabel("Imię").fill("Ewa");
   await page.getByRole("button", { name: "Zapisz" }).click();
+  await waitForStoredClient(page, "Ewa");
 
   await goHome(page);
   await page.getByRole("button", { name: "Ustawienia" }).click();
