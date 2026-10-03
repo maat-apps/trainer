@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { goHome } from "./utils";
 
-test("importing a backup replaces the current data", async ({ page }) => {
+test("importing a backup adds to the current data", async ({ page }) => {
   await goHome(page);
   await page.getByRole("button", { name: "Dodaj klienta" }).first().click();
   await page.getByLabel("Imię").fill("Ewa");
@@ -53,5 +53,5 @@ test("importing a backup replaces the current data", async ({ page }) => {
   ).toBeVisible();
   await expect(
     page.locator('button[data-main="true"]', { hasText: "Ewa" }),
-  ).not.toBeVisible();
+  ).toBeVisible();
 });
