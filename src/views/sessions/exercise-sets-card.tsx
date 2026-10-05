@@ -94,7 +94,7 @@ export function ExerciseSetsCard({
               value={input.side}
               onValueChange={(value) => onInputChange("side", value ?? "")}
             >
-              <SelectTrigger aria-label="Strona" className="h-8">
+              <SelectTrigger aria-label="Strona">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

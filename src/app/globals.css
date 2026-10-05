@@ -10,12 +10,15 @@
    whole dist/, because shared chunk-*.js files have no stable names. */
 @source "../../node_modules/@maat-apps/ui/dist";
 
-/* trainer-specific: @maat-apps/ui's Input defaults to a compact h-8 (32px)
+/* trainer-specific: @maat-apps/ui's Input and Select default to h-11 (44px)
    touch target — bump all fields, including the DatePicker trigger (its
    wrapper has no height of its own; icon/clear button stay centered via
-   absolute positioning), to this app's larger, thumb-friendly sizing. */
+   absolute positioning), to this app's larger, thumb-friendly sizing. Select
+   triggers and their options match, so a select sits level with the text
+   fields beside it. */
 [data-slot="input"],
-[data-slot="textarea"] {
+[data-slot="textarea"],
+[data-slot="select-trigger"] {
   height: 3rem;
   padding-block: 0.5rem;
   font-size: 1rem;
@@ -23,5 +26,9 @@
 
 textarea[data-slot="textarea"] {
   height: auto;
+  min-height: 3rem;
+}
+
+[data-slot="select-item"] {
   min-height: 3rem;
 }
