@@ -60,6 +60,12 @@ What follows here is what's specific to **trainer**.
   `@import "@maat-apps/ui/theme.css"` in the same file — shared by every
   app, so don't redefine tokens here; only trainer's own additions (the
   larger inputs) live in `globals.css`.
+  **Touch targets:** the 3rem field height in `globals.css` applies to every
+  interactive element, not just text fields — select triggers and options
+  already match; give any new tappable control (toggle, chip, row, icon
+  button) at least 44px of hit area and, in a form, the same height as its
+  neighbouring inputs. Add new `data-slot`s to that rule rather than
+  per-component `h-*` overrides.
   `src/lib/utils.ts` re-exports `cn` from the `cn` npm package, matching
   the alias `components.json` declares.
 - **Platform plumbing** comes from
